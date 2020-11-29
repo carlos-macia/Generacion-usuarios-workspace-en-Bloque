@@ -1015,6 +1015,9 @@ def actualizarUsuarios( dades_gestib):
 
 #####################################################
 #                   noValidados()
+# Escribe un fichero de usuarios(usuarios_baja.txt) que
+# ya no figuran en el gestib. Sólo se escriben usuarios
+# que pertenecen a unidades organizativas procesadas
 #
 #####################################################
 def noValidados():

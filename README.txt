@@ -1,37 +1,38 @@
 Autor: José Carlos Maciá Mora
 Email: cmacia@iesisidormacabich.es 
-Página del proyecto
+Página del proyecto en hithub
 https://github.com/carlos-macia/Generacion-usuarios-workspace-en-Bloque
 
-Introducción.
+1. Introducción.
 
 Este script genera, a partir de un fichero de alumnos del gestib, usuarios en 
 bloque para subir a la consola de Workspace. El script compara los datos con 
-otro archivo que tiene los usuarios actuales de nuestro Workspace para decidir
-si se debe añadir o actualizar el usuario. Entre otros, se crean ficheros de
-usuarios, miembros de grupos y contactos. Estos ficheros se suben posteriormente
+otro archivo que contiene los usuarios actuales de nuestro Workspace, para 
+decidir si debe añadir o actualizar el usuario. Entre otros, se crean ficheros
+de usuarios, miembros de grupos y contactos. Estos ficheros se suben posteriormente
 a la consola de Workspace.
 
-Requisitos.
-Interprete de Python 3. La versión 2, dependiendo de la configuracióndel sistema,
-podría dar problemas con los acentos.
+2. Requisitos.
+Interprete de Python 3. La versión 2 de Python podría dar problemas con los acentos
+dependiendo de la configuracióndel sistema.
 
-Funcionamiento.
-El script necesita dos ficheros de entrada; el fichero de datos del gestib, y el
-fichero con los usuarios que hay actualmente en workspace.
+3. Funcionamiento.
+El script necesita dos ficheros de entrada: el fichero de datos del gestib, y el
+fichero con los usuarios que hay actualmente en Workspace (users.csv).
 
 El fichero del gestib, se tiene que transformar de xls a formato csv. Los campos
 que debe tener este fichero son los siguientes:
-      número de línea, apellidos, nombre, estudios, curso, grupo, expediente
+
+   <número de registro, apellidos, nombre, estudios, curso, grupo, expediente>
 
 El archivo de usuarios de Workspace lo bajaremos directamente de la consola de
-google (usuarios bloque). Se debe guardar con el nombre users.csv en la
-misma ruta que se encuentre el scipt.
+Google (usuarios bloque). Se debe guardar con el nombre users.csv en la
+misma ruta que se encuentre el script.
  
 Los dos ficheros de entrada deben estar los más actualizados posible. Es 
 recomendable bajar estos ficheros justo antes de la ejecución del script.
 
-Opciones:
+4. Opciones:
 Básicamente hay dos opciones de ejecución: actualizar usuarios y generar grupos.
 
 Actualizar usuarios (-a):
@@ -53,7 +54,7 @@ pueden dar las siguientes situaciones:
      por lo que el alumno puede quedar en un grupo erroneo. Ver opción Generar
      grupos. 
 
-Generar grupos (-g):
+5. Generar grupos (-g):
      Como vimos anteriormente, cuando un alumno cambia de grupo o estudios se
      le cambia de unidad organizativa automáticamente. Pero no se
      actualizaban los grupos porque el script no puede borrar los miembros de
@@ -61,9 +62,8 @@ Generar grupos (-g):
      Cuando se cambia de curso académico deberemos borrar todos miembros de los
      grupos en Workspace manualmente. Después se ejecuta la opción  de generar 
      grupos, obteniendo un fichero con todos los grupos que se subiran en bloque.
-     
-     
-Ejecución:
+
+6. Ejecución:
      Se necesitan cuatro ficheros para ejecutar el script:
       - genera.py   (bajar de github la versión más reciente)
       - config.ini  (bajar de githab y configurar vuestro dominio)
@@ -73,5 +73,15 @@ Ejecución:
 Ejemplo:
 
      $python genera.py -a dades_destib.csv
+     
+7. Preparación del entorno Workspace.
+     Antes de subir los ficheros de bloques es necesario crear, de forma manual
+     desde la consola de Workspace, todas las unidades organizativas y grupos.
+     Para esto el script genera los ficheros listado_uorg.txt y
+     listado_grupos.txt.
 
+8. Subida de archivos a Workspace.
+     Una vez realizados el punto 6 y 7, se puede proceder a subir los
+     archivos a la consola de Workspace para crear o actualizar la información
+     en bloque.
      

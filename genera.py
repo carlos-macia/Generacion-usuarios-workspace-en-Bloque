@@ -855,7 +855,7 @@ def actualizarInformacionEmail( dades_gestib):
 #             Regenera los grupos
 #
 #####################################################
-def RegeneraGrupos( dades_gestib):
+def generaGrupos( dades_gestib):
 
     generaCabeceraGrupos()
     
@@ -1094,11 +1094,11 @@ if sys.argv[1] == "-a":
     print("\n\nResumen:")
     print("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
     print("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
-# Opción regenerar grupos
+# Opción generar grupos
 elif sys.argv[1] == "-g":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
-    RegeneraGrupos( dades_gestib)
+    generaGrupos( dades_gestib)
 # Opcion regenerar expedientes
 elif sys.argv[1] == "-e":
     cargarUsuariosGoogle()

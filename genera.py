@@ -7,13 +7,14 @@
 # subir a la consola de workspace de Google 
 
 import sys
-import random
 import string
+import random
 import configparser
 from os import remove
 from os import path
 from os import mkdir
 from shutil import rmtree
+from random import randint
 
 #####################################################
 #             class User
@@ -763,6 +764,89 @@ def muestrasGeneracionEmail(dades_gestib):
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
         if  indice_encontrado != -1:
             print("Actual Workspace\t{:30}".format(usuarios_google.obtenerIndice(indice_encontrado).email))        
+
+
+#####################################################
+#              generarDatosFalsos(fichero)
+#____________________________________________________
+#
+#  Para pruebas y muestras en youtube
+#  Genera un ficheo de gestib ficticio combinando
+#  aleatoriamente nombres, apellidos, y demás informació
+#  del gestib.
+#
+#####################################################
+def generarDatosFalsos():
+
+    cont = 0
+    for alumno in lista_alumnos_gestib.lista:
+
+        # No tratar datos de alumnos que no se encuentren en la lista de estudios
+        if alumno.estudios not in LISTA_DE_ESTUDIOS_ACOTADOS:
+            continue
+
+        encontrado = 0
+                    
+        tam_lista = len(lista_alumnos_gestib.lista)
+        
+        
+        nombre = lista_alumnos_gestib.obtenerIndice(randint(1,tam_lista-1)).nombre
+        
+        partes = nombre.split(" ")
+        
+        if len(partes) > 1:
+        
+            alumno.nombre = partes[randint(0,1)]
+            nombre2 = lista_alumnos_gestib.obtenerIndice(randint(1,tam_lista-1)).nombre
+            partes2 = nombre2.split(" ")
+        
+            if len(partes2) > 1:
+                alumno.nombre += " " + partes2[randint(0,1)]
+            else: 
+                alumno.nombre += " " + nombre2
+                
+        else:
+            alumno.nombre = nombre
+                               
+        apellidos = lista_alumnos_gestib.obtenerIndice(randint(1,tam_lista-1)).apellidos
+        
+        partes = apellidos.split(" ")
+        
+        if len(partes) > 1:
+        
+            alumno.apellidos = partes[0]
+            apellidos2 = lista_alumnos_gestib.obtenerIndice(randint(1,tam_lista-1)).apellidos
+            partes2 = apellidos2.split(" ")
+            aux = ""
+            if len(partes2) == 1: 
+                aux += apellidos2
+            
+            if len(partes2) > 1:
+                aux += partes2[1]
+            if len(partes2) > 2:
+                aux += " " + partes2[2]
+            if len(partes2) > 3:
+                aux += " " + partes2[3]
+            
+            alumno.apellidos = alumno.apellidos + " " + aux
+                
+        else:
+            alumno.apellidos = apellidos
+        
+        indice_aleatorio= randint(1,tam_lista-1)
+        
+        alumno.estudios = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).estudios
+        alumno.curso = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).curso
+        alumno.grupo = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).grupo
+           
+        linea = "{0},{1},{2},{3},{4},{5},{6}"
+        linea = linea.format( cont, alumno.apellidos, alumno.nombre,
+                             alumno.estudios,alumno.curso, alumno.grupo, alumno.expediente)
+
+        f= open("gestib.csv","a")
+        f.write(linea+"\n")
+        f.close()
+        cont += 1
             
 
 #####################################################
@@ -949,8 +1033,9 @@ def actualizarUsuarios( dades_gestib):
             #si no encuentra el expediente busca por nombre
             indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
             if indice_encontrado != -1:
-                encontrado = 2 #encontrado nombre
-                #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
+                if usuarios_google.obtenerIndice(indice_encontrado).validado == 0: #no validado, nombres repetidos
+                    encontrado = 2 #encontrado nombre
+                #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos, alumno.expediente)
 
         if encontrado == 0: # no se ha encontrado el usuario. Se añade al fichero usuarios_bloque,
                             # grupos_bloque y a la lista_usuarios en memoria
@@ -1117,6 +1202,12 @@ elif sys.argv[1] == "-p":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
     muestrasGeneracionEmail(dades_gestib)
+
+elif sys.argv[1] == "-d":
+    cargarUsuariosGoogle()
+    cargaFicheroGestib(dades_gestib)
+    generarDatosFalsos()
+
 
 #Opcion incorrecta
 else:

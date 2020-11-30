@@ -65,11 +65,16 @@ class ListaUsers:
         nombre = eliminaEspacios(eliminaSimbolos(eliminaAcentos(nombre.lower())))
         apellidos = eliminaEspacios(eliminaSimbolos(eliminaAcentos(apellidos.lower())))
         ret = -1
+        cont = 0
         for indice in range(len(self._lista)):
             n = eliminaEspacios(eliminaSimbolos(eliminaAcentos(self._lista[indice].nombre.lower())))
             a = eliminaEspacios(eliminaSimbolos(eliminaAcentos(self._lista[indice].apellidos.lower())))
             if n == nombre and a == apellidos:
                 ret = indice
+                cont += 1
+        if cont > 1:
+            print ("Alerta! Nombre repetido: ", nombre, apellidos)
+            ret = -2
         return ret
     
     def buscarExpediente(self,expediente):
@@ -1029,13 +1034,15 @@ def actualizarUsuarios( dades_gestib):
         if  indice_encontrado != -1:
             encontrado = 1 #encontrado expediente
             #print("encontrado",alumno.expediente, alumno.nombre, alumno.apellidos)
-        else:
-            #si no encuentra el expediente busca por nombre
-            indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
-            if indice_encontrado != -1:
-                if usuarios_google.obtenerIndice(indice_encontrado).validado == 0: #no validado, nombres repetidos
-                    encontrado = 2 #encontrado nombre
-                #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos, alumno.expediente)
+        #else:
+        #    #si no encuentra el expediente busca por nombre
+        #    indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
+        #    if indice_encontrado > 0:
+        #            encontrado = 2 #encontrado nombre
+        #            print ("Encontrado por nombre", alumno.nombre, alumno.apellidos, alumno.expediente)
+        #    elif indice_encontrado == -2: # Nombre repetido
+        #        print ("Se ha encontrado un nombre repetido", alumno.nombre, alumno.apellido)
+        #        continue # No se hace nada, salta al siguiente registro           
 
         if encontrado == 0: # no se ha encontrado el usuario. Se añade al fichero usuarios_bloque,
                             # grupos_bloque y a la lista_usuarios en memoria
@@ -1060,7 +1067,7 @@ def actualizarUsuarios( dades_gestib):
 
                 # Insertar en la lista de usuarios_google
                 us = User(alumno.nombre, alumno.apellidos, alumno.email,
-                          alumno.uorg,1,alumno.expediente) # validado??
+                          alumno.uorg,1,alumno.expediente) # validado
                 usuarios_google.insertar(us)   
 
                 # Generar una entrada en el fichero de información para los tutores
@@ -1083,8 +1090,8 @@ def actualizarUsuarios( dades_gestib):
             usuarios_google.validar(indice_encontrado)
 
             # Actualizar la información de unidad organizativa
-            if(alumno.uorg != usuario.uorg or encontrado == 2):  #Si ha cambiado de curso hay que cambiar la unidad organizativa
-                                                                 #Si encontrado == 2, encontrado por nombre, se añade expediente  
+            if(alumno.uorg != usuario.uorg):  #Si ha cambiado de curso hay que cambiar la unidad organizativa
+                                                               
                 cont_actualizados += 1
                 #modificar la uorg en la bd y poner a 1 el bit de modificad
                 #Escribimos el alumno al fichero de nuevos para actualizar la uorg

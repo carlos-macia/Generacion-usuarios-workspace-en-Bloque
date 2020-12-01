@@ -150,6 +150,23 @@ class ListaAlumnos:
                 cont += 1
         return cont
     
+    def buscarNombre(self, nombre, apellidos):
+    
+        nombre = eliminaEspacios(eliminaSimbolos(eliminaAcentos(nombre.lower())))
+        apellidos = eliminaEspacios(eliminaSimbolos(eliminaAcentos(apellidos.lower())))
+        ret = -1
+        cont = 0
+        for indice in range(len(self.lista)):
+            n = eliminaEspacios(eliminaSimbolos(eliminaAcentos(self.lista[indice].nombre.lower())))
+            a = eliminaEspacios(eliminaSimbolos(eliminaAcentos(self.lista[indice].apellidos.lower())))
+            if n == nombre and a == apellidos:
+                ret = indice
+                cont += 1
+        if cont > 1:
+            print ("Alerta! Nombre repetido: ", nombre, apellidos)
+            ret = -2
+        return ret
+    
     def obtenerIndice(self,indice):
         return (self.lista[indice])
     
@@ -762,7 +779,7 @@ def muestrasGeneracionEmail(dades_gestib):
         print("{:4} Versión 2\t\t{:30}".format(len(email)-21, email))
         
         email = generaEmail3(alumno.nombre,alumno.apellidos)
-        print("{:4} Versión 2\t\t{:30}".format(len(email)-21, email))
+        print("{:4} Versión 3\t\t{:30}".format(len(email)-21, email))
         
         #print("Versión 3\t\t{:30}".format(generaEmail3(alumno.nombre,alumno.apellidos)))
                 
@@ -893,6 +910,7 @@ def actualizarExpedientes( dades_gestib):
             # Escribimos la entrada  en el fichero de nuevos usuarios para que al subirlo se actualicen los datos
             escribeUsuarioFichero(alumno,"usuarios_bloque.csv")
 
+
 #####################################################
 #              actualizarInformacionEmail(fichero)
 #____________________________________________________
@@ -938,10 +956,10 @@ def actualizarInformacionEmail( dades_gestib):
         
 
 #####################################################
-#              RegeneraGrupos(con)
+#              generaGrupos(con)
 #____________________________________________________
 #
-#             Regenera los grupos
+#             Genera los grupos
 #
 #####################################################
 def generaGrupos( dades_gestib):
@@ -963,8 +981,6 @@ def generaGrupos( dades_gestib):
         #buscar por Expediente
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
         
-        #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
-
         if indice_encontrado > 0:
             
             #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
@@ -972,9 +988,7 @@ def generaGrupos( dades_gestib):
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
           
             #actualizar la información grupos
-            alumno.email = usuario.email # Cogemos el email de la bd por si no tuviera el mismo formato
-                                                     # El nombre y apallidos mejor dejarlos del fichero del gestib
-                                                     # Alumno ya tiene calculada la nueva unidad rganizativa para actualizar
+            alumno.email = usuario.email # Conserbar el email de workspace
             
             # Escribir el fichero de grupos
             escribeMiembroGrupo(alumno)
@@ -992,7 +1006,7 @@ def generaGrupos( dades_gestib):
 #  de los nuevos usuarios en el fichero de grupos_bloque.csv
 #
 #####################################################
-def actualizarUsuarios( dades_gestib):
+def actualizarUsuarios():
 
     global cont_validados
     global cont_nuevos
@@ -1135,6 +1149,11 @@ lista_cursos = set()
 # Se crea en la lectura del fichero de datos del getib
 lista_uorg = set()
 
+if not path.exists("config.ini"):
+    print("No exixte el fichero config.ini")
+    print("\n")
+    exit()
+
 # Cargar las configuraciones del fichero config.ini
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -1157,14 +1176,18 @@ if len(sys.argv) != 3:
     print("Uso: \n -a actualizar usuarios \n -g regenerar grupos \n -e regenera expedientes\n")
     exit()
 
-# Cargar el fichero del gestib comprobando el formato del fichero e integridad
+# Comprobar que existe el fichero de datos del gestib
 dades_gestib = sys.argv[2]
+if not path.exists(dades_gestib):
+    print("No exixte el fichero: ",dades_gestib)
+    print("\n")
+    exit()
 
 # Opción actualizar usuarios
 if sys.argv[1] == "-a":
     cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)
-    actualizarUsuarios( dades_gestib)
+    cargaFicheroGestib(dades_gestib)    
+    actualizarUsuarios()
     generaListadoUorg()
     generaListadoGrupos()
     noValidados()

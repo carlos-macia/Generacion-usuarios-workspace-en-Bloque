@@ -963,29 +963,25 @@ def generaGrupos( dades_gestib):
         #buscar por Expediente
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
         
-        if  indice_encontrado != -1:
-            encontrado = 1
+        #if  indice_encontrado != -1:
+        #    encontrado = 1
             #print("encontrado",alumno.expediente)
-        else:
-            indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
-            if indice_encontrado != -1:
-                encontrado = 2
+        #else:
+        #    indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
+        #    if indice_encontrado != -1:
+        #        encontrado = 2
                 #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
 
-        if encontrado > 0:
+        if indice_encontrado > 0:
 
-            #usuario = filaExpediente(rows[0])
-            #usuario = usuarios_google.lista[indice_encontrado]
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
-            #confirmar el usuario en la BD
-            #sqlConfirmarUsuario(con,usuario.expediente)
-
+          
             #actualizar la información grupos
-
             alumno.email = usuario.email # Cogemos el email de la bd por si no tuviera el mismo formato
                                                      # El nombre y apallidos mejor dejarlos del fichero del gestib
                                                      # Alumno ya tiene calculada la nueva unidad rganizativa para actualizar
 
+            
             # Escribir el fichero de grupos
             escribeMiembroGrupo(alumno)
             # Escribir el fichero de contactos
@@ -1077,32 +1073,37 @@ def actualizarUsuarios( dades_gestib):
             else:
                 print("Mail repetido 2 intento ", alumno.nombre,alumno.apellidos,
                       alumno.expediente)
-                      
+                                      
+                #Se escribe en el fichero de repetidos para su revisión
                 escribeUsuarioFichero(alumno, "usuarios_repetidos.csv")
 
         else:  # El nombre o expediente sí existen
 
-            cont_validados += 1
-
+            
             #usuario = usuarios_google.lista[indice_encontrado]
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
+            
             # Confirmar el usuario
             usuarios_google.validar(indice_encontrado)
+            cont_validados += 1
 
             # Actualizar la información de unidad organizativa
-            if(alumno.uorg != usuario.uorg):  #Si ha cambiado de curso hay que cambiar la unidad organizativa
+            if(alumno.uorg != usuario.uorg or  #Si ha cambiado de curso hay que cambiar la unidad organizativa
+               alumno.nombre != usuario.nombre or   #Corrige nombre y apellidos
+               alumno.apellidos != usuario.apellidos):  
                                                                
+                
                 cont_actualizados += 1
-                #modificar la uorg en la bd y poner a 1 el bit de modificad
+                # Alumno ya tiene calculada la nueva unidad organizativa 
+
                 #Escribimos el alumno al fichero de nuevos para actualizar la uorg
                 alumno.email = usuario.email # Cogemos el email de la bd por si no tuviera el mismo formato
-                                                         # El nombre y apallidos mejor dejarlos del fichero del gestib
-                                                         # Alumno ya tiene calculada la nueva unidad rganizativa para actualizar
-
+                
                 alumno.password = "****" # nos aseguramos que no se cambie la password
 
-                #escribimos la entrada también en el fichero de nuevos usuarios para que al subirlo se actualicen los datos
+                #escribimos la actualización en el fichero
                 escribeUsuarioFichero(alumno, "usuarios_bloque.csv")
+ 
  
 
 #####################################################
@@ -1128,7 +1129,7 @@ def noValidados():
                 f.write(linea+"\n")
                 f.close()
 
-                print(linea)
+                #print(linea)
 
 #####################################################
 #                         

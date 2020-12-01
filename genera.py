@@ -963,16 +963,11 @@ def generaGrupos( dades_gestib):
         #buscar por Expediente
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
         
-        #if  indice_encontrado != -1:
-        #    encontrado = 1
-            #print("encontrado",alumno.expediente)
-        #else:
-        #    indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
-        #    if indice_encontrado != -1:
-        #        encontrado = 2
-                #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
+        #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
 
         if indice_encontrado > 0:
+            
+            #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
 
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
           
@@ -980,13 +975,11 @@ def generaGrupos( dades_gestib):
             alumno.email = usuario.email # Cogemos el email de la bd por si no tuviera el mismo formato
                                                      # El nombre y apallidos mejor dejarlos del fichero del gestib
                                                      # Alumno ya tiene calculada la nueva unidad rganizativa para actualizar
-
             
             # Escribir el fichero de grupos
             escribeMiembroGrupo(alumno)
             # Escribir el fichero de contactos
             escribeContacto(alumno)
-                
         
 #####################################################
 #              actualizarUsuarios(con)
@@ -1027,20 +1020,8 @@ def actualizarUsuarios( dades_gestib):
         encontrado = 0
         #buscar por Expediente
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
-        if  indice_encontrado != -1:
-            encontrado = 1 #encontrado expediente
-            #print("encontrado",alumno.expediente, alumno.nombre, alumno.apellidos)
-        #else:
-        #    #si no encuentra el expediente busca por nombre
-        #    indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
-        #    if indice_encontrado > 0:
-        #            encontrado = 2 #encontrado nombre
-        #            print ("Encontrado por nombre", alumno.nombre, alumno.apellidos, alumno.expediente)
-        #    elif indice_encontrado == -2: # Nombre repetido
-        #        print ("Se ha encontrado un nombre repetido", alumno.nombre, alumno.apellido)
-        #        continue # No se hace nada, salta al siguiente registro           
-
-        if encontrado == 0: # no se ha encontrado el usuario. Se añade al fichero usuarios_bloque,
+            
+        if indice_encontrado == -1: # no se ha encontrado el usuario. Se añade al fichero usuarios_bloque,
                             # grupos_bloque y a la lista_usuarios en memoria
 
             cont_nuevos += 1
@@ -1071,7 +1052,7 @@ def actualizarUsuarios( dades_gestib):
                 escribeInformacionNuevos(n_archivo,alumno)
                 
             else:
-                print("Mail repetido 2 intento ", alumno.nombre,alumno.apellidos,
+                print("Error, email repetido 2 intento ", alumno.nombre,alumno.apellidos,
                       alumno.expediente)
                                       
                 #Se escribe en el fichero de repetidos para su revisión
@@ -1079,7 +1060,8 @@ def actualizarUsuarios( dades_gestib):
 
         else:  # El nombre o expediente sí existen
 
-            
+            #print("encontrado",alumno.expediente, alumno.nombre, alumno.apellidos)
+
             #usuario = usuarios_google.lista[indice_encontrado]
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
             
@@ -1087,17 +1069,16 @@ def actualizarUsuarios( dades_gestib):
             usuarios_google.validar(indice_encontrado)
             cont_validados += 1
 
-            # Actualizar la información de unidad organizativa
+            # Actualizar la información
             if(alumno.uorg != usuario.uorg or  #Si ha cambiado de curso hay que cambiar la unidad organizativa
                alumno.nombre != usuario.nombre or   #Corrige nombre y apellidos
                alumno.apellidos != usuario.apellidos):  
                                                                
-                
                 cont_actualizados += 1
                 # Alumno ya tiene calculada la nueva unidad organizativa 
 
                 #Escribimos el alumno al fichero de nuevos para actualizar la uorg
-                alumno.email = usuario.email # Cogemos el email de la bd por si no tuviera el mismo formato
+                alumno.email = usuario.email # Cnserbamos el email de workspace
                 
                 alumno.password = "****" # nos aseguramos que no se cambie la password
 

@@ -965,7 +965,7 @@ def actualizarUsuarios():
     
     #generar las cabeceras
     generaCabeceraUsuarios("usuarios_bloque.csv")
-    generaCabeceraUsuarios("repetidos_usuarios.csv")    
+    generaCabeceraUsuarios("usuarios_repetidos.csv")    
     generaCabeceraGrupos()
 
     if not path.exists(DIRECTORIO_INFORMACION):

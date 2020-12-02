@@ -748,11 +748,6 @@ def cargaFicheroGestib( dades_gestib):
             # Añadir a la lista de alumnos gestib
             lista_alumnos_gestib.insertar(alumno)
             
-            # Añadir a la lista de cursos(grupos) para luego poder crear las cabeceras        
-            #lista_cursos.add(alumno.curso+alumno.grupo[0].upper())
-            # Añadir al listado de unidades organizativas  
-            #lista_uorg.add(alumno.uorg)
-            
     if salir == 1:
         print ("Es necesario corregir errores en el fichero con los datos del gestib antes de continuar")
         exit()                
@@ -760,9 +755,10 @@ def cargaFicheroGestib( dades_gestib):
 #####################################################
 #   muestrasGeneracionEmail([tipo lista de alumnos])
 #____________________________________________________
-#
+#   muestra las tres combinaciones de email que
+#    se pueden generar
 #####################################################
-def muestrasGeneracionEmail(dades_gestib):
+def muestrasGeneracionEmail():
 
     for alumno in lista_alumnos_gestib.lista:
 
@@ -792,10 +788,10 @@ def muestrasGeneracionEmail(dades_gestib):
 #              generarDatosFalsos(fichero)
 #____________________________________________________
 #
-#  Para pruebas y muestras en youtube
+#  Para pruebas y demos públicas
 #  Genera un ficheo de gestib ficticio combinando
 #  aleatoriamente nombres, apellidos, y demás informació
-#  del gestib.
+#  del fichero de gestib.
 #
 #####################################################
 def generarDatosFalsos():
@@ -916,7 +912,7 @@ def actualizarExpedientes():
 
 
 #####################################################
-#              actualizarInformacionEmail(fichero)
+#              actualizarInformacionEmail()
 #____________________________________________________
 #
 #  Lee el fichero dadesGestib.cvs y busca por nombre
@@ -963,7 +959,7 @@ def actualizarInformacionEmail():
 #              generaGrupos()
 #____________________________________________________
 #
-#             Genera los grupos
+#   Genera todos los grupos y contactos
 #
 #####################################################
 def generaGrupos():
@@ -1003,9 +999,9 @@ def generaGrupos():
 #              actualizarUsuarios()
 #____________________________________________________
 #
-#  Lee el fichero dadesGestib.cvs y procesa la información
-#  Si encuentra usuarios nuevos se añaden
-#  Se actualiza la unudad organizativa, por ejemplo cambio de curso
+#  Lee el fichero dadesGestib.cvs y procesa la información.
+#  Si encuentra usuarios nuevos se añaden.
+#  Se actualiza la unudad organizativa, por ejemplo cambio de curso.
 #  NO SE REGENERAN TODOS LOS GRUPOS, pero sí se escriben las entradas
 #  de los nuevos usuarios en el fichero de grupos_bloque.csv
 #
@@ -1070,8 +1066,8 @@ def actualizarUsuarios():
                 escribeInformacionNuevos(n_archivo,alumno)
                 
             else:
-                print("Error, email repetido 2 intento ", alumno.nombre,alumno.apellidos,
-                      alumno.expediente)
+                print("Error, email repetido 2 intento\n", alumno.nombre,alumno.apellidos,
+                      alumno.curso, alumno.expediente)
                                       
                 #Se escribe en el fichero de repetidos para su revisión
                 escribeUsuarioFichero(alumno, "usuarios_repetidos.csv")
@@ -1212,18 +1208,17 @@ elif sys.argv[1] == "-e":
 elif sys.argv[1] == "-i":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
-    actualizarInformacionEmail( dades_gestib)
+    actualizarInformacionEmail()
 
 elif sys.argv[1] == "-p":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
-    muestrasGeneracionEmail(dades_gestib)
+    muestrasGeneracionEmail()
 
 elif sys.argv[1] == "-d":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
     generarDatosFalsos()
-
 
 #Opcion incorrecta
 else:

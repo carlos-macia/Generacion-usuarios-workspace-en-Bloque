@@ -39,26 +39,27 @@ Actualizar usuarios (-a):
 El script hace un recorrido por todos los alumnos del fichero del gestib. Se 
 pueden dar las siguientes situaciones:
    - El alumno no se encuentra entre los usuarios del fichero de Workspace:
-     Se crea una entrada en el fichero usuarios_bloque.csv y otra en el fichero
-     grupos_bloque.csv.
+     Se crea una entrada de nuevo usuario en el fichero usuarios_bloque.csv
+     y otra en el fichero grupos_bloque.csv.
     
    - El alumno se encuentra entre los usuarios de Workspace y los datos de la
      unidad organizativa no han variado (no se ha cambiado de curso o de 
-     estudios): no es necesario crear ninguna entrada en los ficheros.
+     modalidad de estudios): no es necesario crear ninguna entrada en los
+     ficheros.
 
    - El alumno se encuentra entre los usuarios del dominio, pero ha cambiado
      su unidad organizativa: Esta situación pasa tanto si se cambia de curso
      como de modalidad de estudios. El script genera una entrada en el fichero
      de usuarios_bloques.csv para actualizar la información de Workspace.
-     ATENCION: Esta opción no genera entrada en el fichero grupos_bloques.csv.
-     por lo que el alumno puede quedar en un grupo erroneo. Ver opción Generar
-     grupos. 
+     ATENCION! Esta opción no genera entrada en el fichero grupos_bloques.csv.
+     por lo que el alumno puede quedará en un grupo erroneo (Ver opción Generar
+     grupos) 
 
 5. Generar grupos (-g):
-     Como vimos anteriormente, cuando un alumno cambia de grupo o estudios se
-     le cambia de unidad organizativa automáticamente. Pero no se
-     actualizaban los grupos porque el script no puede borrar los miembros de
-     un grupo, esta acción se debe realizar manualmente.
+     Como vimos anteriormente, cuando un alumno cambia de curso o modalidad
+     de estudios se le cambia de unidad organizativa automáticamente. Pero no
+     se actualizaban los grupos porque el script no puede borrar los miembros
+     de un grupo, esta acción se debe realizar manualmente.
      Cuando se cambia de curso académico deberemos borrar todos miembros de los
      grupos en Workspace manualmente. Después se ejecuta la opción  de generar 
      grupos, obteniendo un fichero con todos los grupos que se subiran en bloque.
@@ -70,15 +71,18 @@ pueden dar las siguientes situaciones:
       - Fichero del gestib en formato csv
       - Vuestro fichero de usuarios actuales de Wokspace (users.csv)  
 
-Ejemplo:
+    Ejemplo:
 
-     $python genera.py -a dades_destib.csv
+       $python genera.py -a dades_destib.csv
+       $python genera.py -g dades_destib.csv
      
 7. Preparación del entorno Workspace.
-     Antes de subir los ficheros de bloques es necesario crear, de forma manual
-     desde la consola de Workspace, todas las unidades organizativas y grupos.
-     Para esto el script genera los ficheros listado_uorg.txt y
-     listado_grupos.txt.
+     Antes de subir los ficheros de bloque generados por el script, es necesario
+     crear de forma manual, desde la consola de Workspace, todas las unidades
+     organizativas y grupos. Para ayudar, el script genera los ficheros
+     listado_uorg.txt y listado_grupos.txt, los cuales contienen una lista
+     de las unidades organizatibas y grupos necesarios para que se puedan
+     subir los ficheros de bloque. 
 
 8. Subida de archivos a Workspace.
      Una vez realizados el punto 6 y 7, se puede proceder a subir los

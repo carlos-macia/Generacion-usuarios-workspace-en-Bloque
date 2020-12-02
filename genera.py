@@ -2,9 +2,9 @@
 # Autor: J.Carlos Maciá Mora
 # Noviembre de 2020 
 # Descripción: generador de usuarios en bloque. 
-# a partir de los datos del gestib genera ficheros 
+# A partir de los datos del gestib genera ficheros 
 # de usuarios, grupos y contactos en bloque para
-# subir a la consola de workspace de Google 
+# subir a la consola de Workspace de Google
 
 import sys
 import string
@@ -21,7 +21,8 @@ from random import randint
 #____________________________________________________
 #
 # Clase para guardar los datos de usuario que se 
-# encuentran en el fichero de la consola Google
+# encuentran en el fichero que descargamos de la
+# consola de Workspace
 #
 #####################################################
 class User:
@@ -38,8 +39,8 @@ class User:
 #             class ListaUsers
 #____________________________________________________
 #
-# Clase para guardar una lista con los usuarios 
-# encuentran en el fichero de la consola Google
+# Clase para manejar una lista de usuarios(Class User) 
+# 
 #
 #####################################################
 class ListaUsers:
@@ -251,17 +252,18 @@ def resumeApellidos(apellidos):
 #
 #  Genera el email a partir del nombre y los apellidos
 #  Método secundário
+#
 #####################################################
 def generaEmail2(nombre,apellidos):
-    #pasar a miúsculas y quitar acentos
+    # Pasar a miúsculas y quitar acentos
     apellidos = eliminaAcentos(apellidos.lower())
     nombre = eliminaAcentos(nombre.lower())
     
-    # nos quedamos con la primera silaba del primer nombre
+    # Nos quedamos con la primera silaba del primer nombre
     partes = nombre.split(" ")
     nombre = extraerPrimeraSilaba(partes[0])
 
-    #nos quedamos con las primeras silabas de los apellidos
+    # Nos quedamos con las primeras silabas de los apellidos
     partes = apellidos.split(" ")
     apellidos = ""
     for cadena in partes:
@@ -270,17 +272,17 @@ def generaEmail2(nombre,apellidos):
     # Formamos el email con las primeras silabas del primer nombre y los apellidos    
     email = nombre + apellidos
 
-    #Sustituir ñ y Ç
+    # Sustituir ñ y Ç
     email = email.replace("ñ","n")
     email = email.replace("ç","c")
 
-    #Eliminar simbolos
+    # Eliminar simbolos
     email = eliminaSimbolos(email)
    
     # Quitamos espacios, tabuladores y \n
     email = eliminaEspacios(email)
     
-    # añadimos la @ más el dominio
+    # Añadimos la @ más el dominio
     email +=  "@" + DOMINIO
 
     return (email)
@@ -289,7 +291,7 @@ def generaEmail2(nombre,apellidos):
 #             extraerPrimeraSilaba(cadena)
 #____________________________________________________
 #
-#  Extrae la primera sílaba de una cadena
+#  Extrae la primera (sílaba) de una cadena
 #
 #####################################################
 def extraerPrimeraSilaba(cadena):
@@ -317,25 +319,25 @@ def extraerPrimeraSilaba(cadena):
 #____________________________________________________
 #
 #  Genera el email a partir del nombre y los apellidos
-#  tercer método
+#  Tercer método
 #
 #####################################################
 def generaEmail3(nombre,apellidos):
-    #pasar a miúsculas y quitar acentos
+    # Pasar a miúsculas y quitar acentos
     apellidos = eliminaAcentos(apellidos.lower())
     nombre = eliminaAcentos(nombre.lower())
     
-    # nos quedamos con la primera silaba del primer nombre
+    # Nos quedamos con la inicial de cada nombre
     partes = nombre.split(" ")
     nombre = partes[0][0]
     if len(partes) > 1:
         nombre += partes[1][0]
         
-    #nos quedamos con el primer apellido
+    # Nos quedamos con el primer apellido
     partes = apellidos.split(" ")
     apellidos = partes[0]
     
-    # Formamos el email con nombre y los apellidos    
+    # Formamos el email con las iniciales del nombre y el primer apellido    
     email =  nombre + apellidos
 
     #Sustituir ñ y Ç
@@ -589,7 +591,6 @@ def escribeContacto( alumno):
     f.write(linea+"\n")
     f.close()
 
-
 #####################################################
 #              borrarArchivos()
 #____________________________________________________
@@ -600,7 +601,7 @@ def escribeContacto( alumno):
 def borrarArchivos():
 
     archivos = [ 'usuarios_bloque.csv', 'grupos_bloque.csv', 'nuevos_contactos.csv',
-                 'repetidos_usuarios.csv','listado_uorg.txt', 'listado_grupos.txt',
+                 'usuarios_repetidos.csv','listado_uorg.txt', 'listado_grupos.txt',
                  'usuarios_baja.txt']
 
     for file in archivos:
@@ -755,7 +756,7 @@ def cargaFicheroGestib( dades_gestib):
 #####################################################
 #   muestrasGeneracionEmail([tipo lista de alumnos])
 #____________________________________________________
-#   muestra las tres combinaciones de email que
+#   Muestra las tres combinaciones de email que
 #    se pueden generar
 #####################################################
 def muestrasGeneracionEmail():
@@ -777,8 +778,6 @@ def muestrasGeneracionEmail():
         email = generaEmail3(alumno.nombre,alumno.apellidos)
         print("{:4} Versión 3\t\t{:30}".format(len(email)-21, email))
         
-        #print("Versión 3\t\t{:30}".format(generaEmail3(alumno.nombre,alumno.apellidos)))
-                
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
         if  indice_encontrado != -1:
             print("Actual Workspace\t{:30}".format(usuarios_google.obtenerIndice(indice_encontrado).email))        
@@ -890,8 +889,6 @@ def actualizarExpedientes():
         indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
 
         if indice_encontrado > 0:
-            
-            #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
 
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
               
@@ -909,52 +906,6 @@ def actualizarExpedientes():
        
     print ("Se han actualizado {} expedientes".format(actualizados))
     
-
-
-#####################################################
-#              actualizarInformacionEmail()
-#____________________________________________________
-#
-#  Lee el fichero dadesGestib.cvs y busca por nombre
-#  y actualiza los numeros de expediente en el fichero
-#  de salida usuarios_bloque.csv
-#
-#####################################################
-def actualizarInformacionEmail():
-
-    generaCabeceraUsuarios("usuarios_bloque.csv")
-    for alumno in lista_alumnos_gestib.lista:
-
-        # No tratar datos de alumnos que no se encuentren en la lista de estudios
-        if alumno.estudios not in LISTA_DE_ESTUDIOS_ACOTADOS:
-            continue
-
-        email = generaEmail3(alumno.nombre, alumno.apellidos)
-        
-        encontrado = 0
-        indice_encontrado = usuarios_google.buscarEmail(email)  
-        if indice_encontrado != -1:
-            encontrado = 1
-            #print ("Encontrado por Mail", alumno.nombre, alumno.apellidos)
-        else:
-            indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
-            if indice_encontrado != -1:
-                encontrado = 2
-                #print ("Encontrado por Nombre", alumno.nombre, alumno.apellidos)
-
-        if encontrado > 0:
-            #usuario = usuarios_google.lista[indice_encontrado]
-            usuario = usuarios_google.obtenerIndice(indice_encontrado)
-            #Cogemos los datos de la base de datos para no alterar ningún campo salvo el expediente
-            alumno.email = usuario.email
-            alumno.password = "****" # nos aseguramos que no se cambie la password
-            alumno.uorg = usuario.uorg
-            # Escribimos la entrada  en el fichero de nuevos usuarios para que al subirlo se actualicen los datos
-            escribeUsuarioFichero(alumno,"usuarios_bloque.csv")
-        else:
-            print("email no encontrado", email)
-        
-
 #####################################################
 #              generaGrupos()
 #____________________________________________________
@@ -1001,9 +952,9 @@ def generaGrupos():
 #
 #  Lee el fichero dadesGestib.cvs y procesa la información.
 #  Si encuentra usuarios nuevos se añaden.
-#  Se actualiza la unudad organizativa, por ejemplo cambio de curso.
+#  Se actualiza la unidad organizativa, por ejemplo cambio de curso.
 #  NO SE REGENERAN TODOS LOS GRUPOS, pero sí se escriben las entradas
-#  de los nuevos usuarios en el fichero de grupos_bloque.csv
+#  __sólo__ de los nuevos usuarios en el fichero de grupos_bloque.csv
 #
 #####################################################
 def actualizarUsuarios():
@@ -1074,8 +1025,6 @@ def actualizarUsuarios():
 
         else:  # El nombre o expediente sí existen
 
-            #print("encontrado",alumno.expediente, alumno.nombre, alumno.apellidos)
-
             #usuario = usuarios_google.lista[indice_encontrado]
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
             
@@ -1098,8 +1047,6 @@ def actualizarUsuarios():
 
                 #escribimos la actualización en el fichero
                 escribeUsuarioFichero(alumno, "usuarios_bloque.csv")
- 
- 
 
 #####################################################
 #                   noValidados()
@@ -1110,7 +1057,6 @@ def actualizarUsuarios():
 #####################################################
 def noValidados():
     n = 0
-    
     for usuario in usuarios_google._lista:
         if usuario.uorg in lista_uorg:
             if usuario.validado == 0:
@@ -1171,6 +1117,9 @@ print("\n")
 
 # Borrar los archivos de ejecuciones anteriores
 borrarArchivos()
+
+if sys.argv[1] == "-b":
+    exit()
 
 if len(sys.argv) != 3:
     print("Uso: \n -a actualizar usuarios \n -g regenerar grupos \n -e regenera expedientes\n")

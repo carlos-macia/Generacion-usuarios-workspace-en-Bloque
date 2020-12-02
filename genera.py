@@ -73,7 +73,7 @@ class ListaUsers:
                 ret = indice
                 cont += 1
         if cont > 1:
-            print ("Alerta! Nombre repetido: ", nombre, apellidos)
+            #print ("Alerta! Nombre repetido: ", nombre, apellidos)
             ret = -2
         return ret
     
@@ -163,7 +163,7 @@ class ListaAlumnos:
                 ret = indice
                 cont += 1
         if cont > 1:
-            print ("Alerta! Nombre repetido: ", nombre, apellidos)
+            #print ("Alerta! Nombre repetido: ", nombre, apellidos)
             ret = -2
         return ret
     
@@ -811,7 +811,6 @@ def generarDatosFalsos():
                     
         tam_lista = len(lista_alumnos_gestib.lista)
         
-        
         nombre = lista_alumnos_gestib.obtenerIndice(randint(1,tam_lista-1)).nombre
         
         partes = nombre.split(" ")
@@ -880,35 +879,40 @@ def generarDatosFalsos():
 #  de salida usuarios_bloque.csv
 #
 #####################################################
-def actualizarExpedientes( dades_gestib):
+def actualizarExpedientes():
 
     generaCabeceraUsuarios("usuarios_bloque.csv")
     
+    actualizados = 0
     for alumno in lista_alumnos_gestib.lista:
 
         # No tratar datos de alumnos que no se encuentren en la lista de estudios
         if alumno.estudios not in LISTA_DE_ESTUDIOS_ACOTADOS:
             continue
 
-        encontrado = 0
-            
         # Buscar por nombre
         indice_encontrado = usuarios_google.buscarNombre(alumno.nombre,alumno.apellidos)
 
         if indice_encontrado > 0:
             
-            print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
+            #print ("Encontrado por nombre", alumno.nombre, alumno.apellidos)
 
             usuario = usuarios_google.obtenerIndice(indice_encontrado)
-                    
-            #Cogemos los datos de la base de datos para no alterar ningún campo salvo el expediente
-            alumno.nombre = usuario.nombre
-            alumno.apellidos = usuario.apellidos
-            alumno.email = usuario.email
-            alumno.password = "****" # nos aseguramos que no se cambie la password
-            alumno.uorg = usuario.uorg
-            # Escribimos la entrada  en el fichero de nuevos usuarios para que al subirlo se actualicen los datos
-            escribeUsuarioFichero(alumno,"usuarios_bloque.csv")
+              
+            if usuario.expediente == "":
+                
+                actualizados += 1    
+                alumno.email = usuario.email #conservamos el email
+                alumno.password = "****" # nos aseguramos que no se cambie la password
+                # Escribimos la actualizacion de los datos en el fichero
+                escribeUsuarioFichero(alumno,"usuarios_bloque.csv")
+       
+        elif indice_encontrado == -2:
+            print("Nombre repetido {} {} {} - NO SE PROCESA".format(
+                   alumno.nombre, alumno.apellidos, alumno.email))
+       
+    print ("Se han actualizado {} expedientes".format(actualizados))
+    
 
 
 #####################################################
@@ -920,7 +924,7 @@ def actualizarExpedientes( dades_gestib):
 #  de salida usuarios_bloque.csv
 #
 #####################################################
-def actualizarInformacionEmail( dades_gestib):
+def actualizarInformacionEmail():
 
     generaCabeceraUsuarios("usuarios_bloque.csv")
     for alumno in lista_alumnos_gestib.lista:
@@ -956,13 +960,13 @@ def actualizarInformacionEmail( dades_gestib):
         
 
 #####################################################
-#              generaGrupos(con)
+#              generaGrupos()
 #____________________________________________________
 #
 #             Genera los grupos
 #
 #####################################################
-def generaGrupos( dades_gestib):
+def generaGrupos():
 
     generaCabeceraGrupos()
     
@@ -996,7 +1000,7 @@ def generaGrupos( dades_gestib):
             escribeContacto(alumno)
         
 #####################################################
-#              actualizarUsuarios(con)
+#              actualizarUsuarios()
 #____________________________________________________
 #
 #  Lee el fichero dadesGestib.cvs y procesa la información
@@ -1046,7 +1050,7 @@ def actualizarUsuarios():
             if usuarios_google.buscarEmail(alumno.email) > 0: #el email lo usa otro usuario
                 # se genera un nuevo email con la segunda función
                 alumno.email = generaEmail2(alumno.nombre, alumno.apellidos)
-            
+                #print(alumno.nombre, alumno.apellidos) 
             # Se vuelve a buscar por si el segundo email también está usado
             if usuarios_google.buscarEmail(alumno.email) == -1: # se puede usar este email
             
@@ -1198,12 +1202,12 @@ if sys.argv[1] == "-a":
 elif sys.argv[1] == "-g":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
-    generaGrupos( dades_gestib)
+    generaGrupos()
 # Opcion regenerar expedientes
 elif sys.argv[1] == "-e":
     cargarUsuariosGoogle()
     cargaFicheroGestib(dades_gestib)
-    actualizarExpedientes( dades_gestib)
+    actualizarExpedientes()
 # Opcion regenerar informacion
 elif sys.argv[1] == "-i":
     cargarUsuariosGoogle()

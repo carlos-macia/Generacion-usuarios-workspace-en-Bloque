@@ -707,13 +707,8 @@ def generaListadoGrupos():
 #####################################################
 def cargaFicheroGestib( dades_gestib):
     cont = 0
-    salir = 0
+    error = 0
     
-    #Asegurarse que existe el fichero
-    if not path.exists(dades_gestib):
-        print("Error. No existe el fichero: ", dades_gestib)
-        exit (0)
-        
     with open(dades_gestib) as f:
         for linea in f:
             
@@ -727,13 +722,13 @@ def cargaFicheroGestib( dades_gestib):
             
             # Se deben leer 7 campos por línea
             if len(aux_user) != 7:
-               print("Error de formato en línea: ",cont)
-               salir = 1
+               print("Error de formato. Línea: {:15} NO SE PROCESA".format(cont))
+               error += 1
                continue #no se procesa la línea
             # El primer y último campo deben ser dígitos 
             elif not(aux_user[0].isdigit()) or not(aux_user[6].isdigit()):
-               print ("Error de formato. Dígitos de numeración o expediente. Línea: ", cont)
-               salir = 1
+               print ("Error de formato. Línea: {:15} NO SE PROCESA (Dígitos)".format(cont))
+               error += 1
                continue  #no se procesa la línea
     
             # Crear el alumno con los datos leídos
@@ -742,16 +737,16 @@ def cargaFicheroGestib( dades_gestib):
 
             # Controlar expedientes repetidos 
             if lista_alumnos_gestib.esExpedienteRepetido(alumno.expediente) > 0:
-                print("Error Expediente repetido. Línea: ", cont)
-                salir = 1
+                print("Error expediente {} repetido. Línea: {:15} NO SE PROCESA".format(alumno.expediente, cont))
+                error += 1
                 continue
                 
             # Añadir a la lista de alumnos gestib
             lista_alumnos_gestib.insertar(alumno)
             
-    if salir == 1:
-        print ("Es necesario corregir errores en el fichero con los datos del gestib antes de continuar")
-        exit()                
+    if error > 0:
+        print ("ALERTA! Se han descartado {} líneas erroneas del fichero {}".format(error,dades_gestib))
+        #exit()                
 
 #####################################################
 #   muestrasGeneracionEmail([tipo lista de alumnos])
@@ -855,6 +850,7 @@ def generarDatosFalsos():
         alumno.curso = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).curso
         alumno.grupo = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).grupo
            
+        alumno.expediente = "099" + alumno.expediente
         linea = "{0},{1},{2},{3},{4},{5},{6}"
         linea = linea.format( cont, alumno.apellidos, alumno.nombre,
                              alumno.estudios,alumno.curso, alumno.grupo, alumno.expediente)
@@ -1017,8 +1013,8 @@ def actualizarUsuarios():
                 escribeInformacionNuevos(n_archivo,alumno)
                 
             else:
-                print("Error, email repetido 2 intento\n", alumno.nombre,alumno.apellidos,
-                      alumno.curso, alumno.expediente)
+                print("Error, email repetido: {} {} {} {} NO SE PROCESA".format( alumno.nombre,alumno.apellidos,
+                      alumno.curso, alumno.expediente))
                                       
                 #Se escribe en el fichero de repetidos para su revisión
                 escribeUsuarioFichero(alumno, "usuarios_repetidos.csv")

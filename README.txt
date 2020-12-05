@@ -67,9 +67,9 @@ pueden dar las siguientes situaciones:
 6. Ejecución:
      Se necesitan cuatro ficheros para ejecutar el script:
       - genera.py   (bajar de github la versión más reciente)
-      - config.ini  (bajar de githab y configurar vuestro dominio)
+      - config.ini  (bajar de github y configurar vuestro dominio)
       - Fichero del gestib en formato csv
-      - Vuestro fichero de usuarios actuales de Wokspace (users.csv)  
+      - El fichero de usuarios actuales en Wokspace (users.csv)  
 
     Ejemplo:
 
@@ -78,10 +78,10 @@ pueden dar las siguientes situaciones:
      
 7. Preparación del entorno Workspace.
      Antes de subir los ficheros de bloque generados por el script, es necesario
-     crear de forma manual, desde la consola de Workspace, todas las unidades
+     crear, de forma manual desde la consola de Workspace, todas las unidades
      organizativas y grupos. Para ayudar, el script genera los ficheros
      listado_uorg.txt y listado_grupos.txt, los cuales contienen una lista
-     de las unidades organizatibas y grupos necesarios para que se puedan
+     de las unidades organizativas y grupos necesarios para que se puedan
      subir los ficheros de bloque. 
 
 8. Subida de archivos a Workspace.

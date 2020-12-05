@@ -69,7 +69,7 @@ pueden dar las siguientes situaciones:
       - genera.py   (bajar de github la versión más reciente)
       - config.ini  (bajar de github y configurar vuestro dominio)
       - Fichero del gestib en formato csv
-      - El fichero de usuarios actuales en Wokspace (users.csv)  
+      - El fichero de usuarios actuales en Workspace (users.csv)  
 
     Ejemplo:
 

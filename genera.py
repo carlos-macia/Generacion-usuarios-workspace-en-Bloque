@@ -1007,6 +1007,7 @@ if not path.exists(dades_gestib):
     log.imprimir(linea)
     log.imprimir("\n")
     exit()
+
 # Comprobar que tiene extensión csv
 elif dades_gestib[-3:] != "csv":
     linea = "El archivo {} debe conversitrse a formato csv, ".format(dades_gestib)

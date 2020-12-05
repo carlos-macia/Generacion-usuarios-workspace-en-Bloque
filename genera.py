@@ -16,16 +16,12 @@ from os import mkdir
 from shutil import rmtree
 from random import randint
 
-#####################################################
-#             class User
-#____________________________________________________
-#
-# Clase para guardar los datos de usuario que se 
-# encuentran en el fichero que descargamos de la
-# consola de Workspace
-#
-#####################################################
 class User:
+    """
+    Clase para guardar los datos de usuario que se 
+    encuentran en el fichero que descargamos de la
+    consola de Workspace
+    """
     def __init__(self, nombre,apellidos, email, uorg,
                  validado, expediente):
         self.nombre = nombre
@@ -35,15 +31,10 @@ class User:
         self.validado = validado
         self.expediente = expediente
 
-#####################################################
-#             class ListaUsers
-#____________________________________________________
-#
-# Clase para manejar una lista de usuarios(Class User) 
-# 
-#
-#####################################################
 class ListaUsers:
+    """
+    Clase para manejar una lista de usuarios(Class User) 
+    """
     def __init__(self):
         self._lista = []
         
@@ -52,7 +43,6 @@ class ListaUsers:
     
     def obtenerIndice(self,indice):
         return (self._lista[indice])
-    
     
     def buscarEmail(self,email):
         ret = -1
@@ -74,7 +64,7 @@ class ListaUsers:
                 ret = indice
                 cont += 1
         if cont > 1:
-            #print ("Alerta! Nombre repetido: ", nombre, apellidos)
+            #log.imprimir ("Alerta! Nombre repetido: ", nombre, apellidos)
             ret = -2
         return ret
     
@@ -99,15 +89,11 @@ class ListaUsers:
         for u in self._lista:
             print (u.nombre)
 
-#####################################################
-#             class ClassAlumno
-#____________________________________________________
-#
-# Clase para guardar los datos del alumno que se 
-# encuentran en el Gestib
-#
-#####################################################
 class ClassAlumno:
+    """
+    Clase para guardar los datos del alumno que se 
+    encuentran en el Gestib
+    """
     def __init__(self, num,apellidos, nombre, estudios, curso, grupo, expediente):
         self.num = num
         nombre = nombre.lstrip(' ').rstrip(' ') #quita el espacio del principio y final
@@ -122,15 +108,12 @@ class ClassAlumno:
         self.expediente = eliminaEspacios(expediente) #puede tener el \n al final, \r o espacio
         self.uorg = generaUnidadOrganizativa(estudios, curso, grupo)
 
-#####################################################
-#             class ListaAlumnos
-#____________________________________________________
-#
-# Clase para construir una lista de alumnos que se 
-# encuentran en el Gestib
-#
-#####################################################
+
 class ListaAlumnos:
+    """
+    Clase para construir una lista de alumnos que se 
+    encuentran en el Gestib
+    """
     def __init__(self):
         self.lista = []
         
@@ -164,23 +147,29 @@ class ListaAlumnos:
                 ret = indice
                 cont += 1
         if cont > 1:
-            #print ("Alerta! Nombre repetido: ", nombre, apellidos)
+            #log.imprimir ("Alerta! Nombre repetido: ", nombre, apellidos)
             ret = -2
         return ret
     
     def obtenerIndice(self,indice):
         return (self.lista[indice])
-    
-#####################################################
-#             generaEmail(nombre, apellidos)
-#____________________________________________________
-#
-#  Genera el email a partir del nombre y los apellidos
-#  Método principal
-#
-#####################################################
-def generaEmail(nombre, apellidos):
 
+class Log:    
+    def __init__(self):
+        self.fichero_log = "genera.log"
+        
+    def imprimir(self,linea):
+       # Añadir al fichero
+        f= open(self.fichero_log,"a")
+        f.write(linea+"\n")
+        print(linea)
+        f.close()
+
+def generaEmail(nombre, apellidos):
+    """
+    Genera el email a partir del nombre y los apellidos
+    Método principal
+    """
     #pasar a miúsculas y quitar acentos
     apellidos = eliminaAcentos(apellidos.lower())
     nombre = eliminaAcentos(nombre.lower())
@@ -214,15 +203,10 @@ def generaEmail(nombre, apellidos):
 
     return (email)
 
-#####################################################
-#             resumeApellidos(apellidos)
-#____________________________________________________
-#
-#  Acorta los apellidos largos
-#  
-#
-#####################################################
 def resumeApellidos(apellidos):
+    """
+    Acorta los apellidos largos
+    """
     resumen = ""
 
     if len(apellidos) > 11:
@@ -246,15 +230,12 @@ def resumeApellidos(apellidos):
                         
     return (resumen)            
 
-#####################################################
-#             generaEmail2(nombre, apellidos)
-#____________________________________________________
-#
-#  Genera el email a partir del nombre y los apellidos
-#  Método secundário
-#
-#####################################################
 def generaEmail2(nombre,apellidos):
+    """
+    Genera el email a partir del nombre y los apellidos
+    Método secundário
+    """
+    
     # Pasar a miúsculas y quitar acentos
     apellidos = eliminaAcentos(apellidos.lower())
     nombre = eliminaAcentos(nombre.lower())
@@ -287,14 +268,10 @@ def generaEmail2(nombre,apellidos):
 
     return (email)
 
-#####################################################
-#             extraerPrimeraSilaba(cadena)
-#____________________________________________________
-#
-#  Extrae la primera (sílaba) de una cadena
-#
-#####################################################
 def extraerPrimeraSilaba(cadena):
+    """
+    Extrae la primera (sílaba) de una cadena
+    """
     i = 0
     vocales = 0
     new = ""
@@ -313,16 +290,11 @@ def extraerPrimeraSilaba(cadena):
         i += 1
     return(new)
 
-
-#####################################################
-#             generaEmail3(nombre, apellidos)
-#____________________________________________________
-#
-#  Genera el email a partir del nombre y los apellidos
-#  Tercer método
-#
-#####################################################
 def generaEmail3(nombre,apellidos):
+    """
+    Genera el email a partir del nombre y los apellidos
+    Tercer método
+    """
     # Pasar a miúsculas y quitar acentos
     apellidos = eliminaAcentos(apellidos.lower())
     nombre = eliminaAcentos(nombre.lower())
@@ -355,29 +327,21 @@ def generaEmail3(nombre,apellidos):
 
     return (email)
 
-#####################################################
-#             eliminaEspacios(cadena)
-#____________________________________________________
-#
-# Elimina los espacios, tabuladores y retorno de carrro
-# de una cadena
-#
-#####################################################
 def eliminaEspacios(cadena):
+    """
+    Elimina los espacios, tabuladores y retorno de carrro
+    de una cadena
+    """
     cadena = cadena.replace(" ","")
     cadena = cadena.replace("\t","")
     cadena = cadena.replace("\n","")
     cadena = cadena.replace("\r","")
     return (cadena)
     
-#####################################################
-#             eliminaSimbolos(cadena)
-#____________________________________________________
-#
-# Elimina los símbolos de una cadena
-#
-#####################################################
 def eliminaSimbolos(cadena):
+    """
+    Elimina los símbolos de una cadena
+    """
     cadena = cadena.replace("-","")
     cadena = cadena.replace("_","")
     cadena = cadena.replace("{","")
@@ -410,16 +374,11 @@ def eliminaSimbolos(cadena):
     
     return(cadena)
 
-#####################################################
-#             eliminaAcentos(cadena)
-#____________________________________________________
-#
-# Elimina los acentos de una cadena ( MINÚSCULAS ),
-# abiertos y cerrados
-#
-#####################################################
 def eliminaAcentos(cadena):
-
+    """
+    Elimina los acentos de una cadena ( MINÚSCULAS ),
+    abiertos y cerrados
+    """
     cadena = cadena.replace("á","a")
     cadena = cadena.replace("é","e")
     cadena = cadena.replace("í","i")
@@ -443,33 +402,21 @@ def eliminaAcentos(cadena):
     
     return (cadena)
 
-#####################################################
-#  generaUnidadOrganizativa(estudios,curso,grupo)
-#____________________________________________________
-#
-# Forma el nombre de la unidad organizativa
-#
-#####################################################
 def generaUnidadOrganizativa(estudios,curso,grupo):
-    
+    """
+    Forma el nombre de la unidad organizativa
+    """  
     uorg = "/"+ UNIDAD_ORGANIZATIVA_PADRE +"/{0}/{1}{2}"
     uorg = uorg.format(estudios, curso, grupo.upper())
     #uorg = uorg.replace(".","") # quita el punto de batx.
     return uorg
 
-#####################################################
-#           cargarUsuariosGoogle(con)
-#____________________________________________________
-#
-#  Carga la información de los usuarios de la 
-#  consola de Google que se encuentran en el 
-#  fichero users.cvs en la lista usuarios_google
-#
-#####################################################
 def cargarUsuariosGoogle():
-    if not path.exists('users.csv'):
-        print("ERROR: No existe el fichero users.csv (usuarios consola Google)")
-        exit(0)
+    """
+    Carga la información de los usuarios de la 
+   consola de Google que se encuentran en el 
+   fichero users.cvs en la lista usuarios_google
+    """
     with open('users.csv') as f:
         for linea in f:
             aux_user=linea.split(',');
@@ -479,14 +426,10 @@ def cargarUsuariosGoogle():
                            aux_user[5], 0, aux_user[16] ) #16 expediente
             usuarios_google.insertar(usuario)            
         
-#####################################################
-#         generaPassword()
-#____________________________________________________
-#
-#  Genera un password alfanumerico de 8 caracteres
-#
-#####################################################
 def generaPassword():
+    """
+    Genera un password alfanumerico de 8 caracteres
+    """
     caract=string.ascii_letters
     password = ("").join(random.choice(caract)for i in range(2))
 
@@ -501,16 +444,11 @@ def generaPassword():
 
     return(password)
 
-#####################################################
-#         escribeUsuarioFichero(alumno)
-#____________________________________________________
-#
-#  Escribe el nuevo usuario o actualización en el 
-#  fichero de salida usuarios_bloque.csv
-#
-#####################################################
 def escribeUsuarioFichero(alumno, fichero):
-
+    """
+    Escribe el nuevo usuario o actualización en el 
+   fichero de salida usuarios_bloque.csv
+    """
     # Formatear la línea
     linea = "{0},{1},{2},{3},,{4},,,,,,,,,,,{5},,,,,,,,,{6},"
     linea = linea.format(alumno.nombre ,alumno.apellidos, alumno.email,
@@ -522,16 +460,11 @@ def escribeUsuarioFichero(alumno, fichero):
     f.write(linea+"\n")
     f.close()
 
-#####################################################
-#          escribeMiembroGrupo(alumno)
-#____________________________________________________
-#
-#  Escribe una entrada de miembro de grupo en el fichero
-#  grupos_bloque.cvs
-#
-#####################################################
 def escribeMiembroGrupo(alumno):
-
+    """
+    Escribe una entrada de miembro de grupo en el fichero
+    grupos_bloque.cvs
+    """
     #formatear email de grupo
     email_grupo = "{0}{1}@iesisidormacabich.es"
     email_grupo = email_grupo.format(alumno.curso.replace(".",""),alumno.grupo) #quita a curso el . de batxl.
@@ -547,17 +480,12 @@ def escribeMiembroGrupo(alumno):
     f.write(linea+"\n")
     f.close()
 
-#####################################################
-#          escribeInformacionNuevos(alumno)
-#____________________________________________________
-#
-#  Escribe una entrada de usuario y contraseña en el 
-#  fichero correspondiente dentro del directorio 
-#  Información
-#
-#####################################################
 def escribeInformacionNuevos(fichero, alumno):
-
+    """
+    Escribe una entrada de usuario y contraseña en el 
+    fichero correspondiente dentro del directorio 
+    Información
+    """
     #formatear informacion
     nombre = alumno.nombre+" "+ alumno.apellidos
     linea = "{0:40}{1:35}{2:10}{3:8}{4:2}"
@@ -567,16 +495,11 @@ def escribeInformacionNuevos(fichero, alumno):
     f.write(linea+"\n")
     f.close()
 
-#####################################################
-#          escribeContacto(alumno)
-#____________________________________________________
-#
-#  genera una entrada de contacto en el fichero
-#  cvs correspondiente
-#
-#####################################################
 def escribeContacto( alumno):
-
+    """
+    genera una entrada de contacto en el fichero
+    cvs correspondiente
+    """
     #formatear la etiqueta de contacto
     etiqueta = "{0} {1}{2}"
     etiqueta = etiqueta.format( alumno.estudios,alumno.curso, alumno.grupo)
@@ -591,18 +514,14 @@ def escribeContacto( alumno):
     f.write(linea+"\n")
     f.close()
 
-#####################################################
-#              borrarArchivos()
-#____________________________________________________
-#
-#  Borrar archivos de de salida de ejecuciones anteriores
-#
-#####################################################
 def borrarArchivos():
+    """
+    Borrar archivos de de salida de ejecuciones anteriores
+    """
 
     archivos = [ 'usuarios_bloque.csv', 'grupos_bloque.csv', 'nuevos_contactos.csv',
                  'usuarios_repetidos.csv','listado_uorg.txt', 'listado_grupos.txt',
-                 'usuarios_baja.txt']
+                 'usuarios_baja.txt', 'genera.log']
 
     for file in archivos:
         if path.exists(file):
@@ -616,30 +535,20 @@ def borrarArchivos():
     if path.exists(DIRECTORIO_INFORMACION):
         rmtree(DIRECTORIO_INFORMACION)
 
-
-#####################################################
-#              generaCabeceraUsuarios()
-#____________________________________________________
-#
-#  Escribe la cabecera del archivo usuarios_bloque.csv
-#
-#####################################################
 def generaCabeceraUsuarios(fichero):
+    """
+    Escribe la cabecera del archivo usuarios_bloque.csv
+    """
 
     linea = "First Name [Required],Last Name [Required],Email Address [Required],Password [Required],Password Hash Function [UPLOAD ONLY],Org Unit Path [Required],New Primary Email [UPLOAD ONLY],Recovery Email,Home Secondary Email,Work Secondary Email,Recovery Phone [MUST BE IN THE E.164 FORMAT],Work Phone,Home Phone,Mobile Phone,Work Address,Home Address,Employee ID,Employee Type,Employee Title,Manager Email,Department,Cost Center,Building ID,Floor Name,Floor Section,Change Password at Next Sign-In,New Status [UPLOAD ONLY]"
     f= open(fichero,"a")
     f.write(linea+"\n")
     f.close()
 
-#####################################################
-#              generaCabeceraGrupos()
-#____________________________________________________
-#
-#  Escribe la cabecera del archivo grupos_bloque.csv
-#
-#####################################################
 def generaCabeceraGrupos():
- 
+    """
+    Escribe la cabecera del archivo grupos_bloque.csv
+    """
     linea = "Group Email [Required],Member Email,Member Name,Member Role,Member Type"
     f= open("grupos_bloque.csv","a")
     f.write(linea+"\n")
@@ -649,13 +558,15 @@ def generaCabeceraGrupos():
 #              generaCabeceraContactos()
 #____________________________________________________
 #
-#  Escribe la cabecera del archivo de contactos
-#  el nombre de este archivo coincide con el nombre
-#  del curso + .csv
+#  
 #
 #####################################################
 def generaCabeceraContactos():
-    
+    """
+    Escribe la cabecera del archivo de contactos
+    el nombre de este archivo coincide con el nombre
+    del curso + .csv
+    """
     linea = "Name,Given Name,Additional Name,Family Name,Yomi Name,Given Name Yomi,Additional Name Yomi,Family Name Yomi,Name Prefix,Name Suffix,Initials,Nickname,Short Name,Maiden Name,Birthday,Gender,Location,Billing Information,Directory Server,Mileage,Occupation,Hobby,Sensitivity,Priority,Subject,Notes,Language,Photo,Group Membership,E-mail 1 - Type,E-mail 1 - Value"
         
     for curso in lista_cursos:
@@ -664,32 +575,22 @@ def generaCabeceraContactos():
         f.write(linea+"\n")
         f.close()
 
-#####################################################
-#              generaListadoUorg()
-#____________________________________________________
-#
-#  Escribe un listado de unidades organizativas en el 
-#  fichero listado_uorg.txt   
-#
-#####################################################
 def generaListadoUorg():
-    
+    """
+    Escribe un listado de unidades organizativas en el 
+    fichero listado_uorg.txt   
+    """ 
     l = sorted(lista_uorg)    
     for uo in l:
         f= open("listado_uorg.txt","a")
         f.write(uo+"\n")
         f.close()
 
-#####################################################
-#              generaListadoGrupos()()
-#____________________________________________________
-#
-# Escribe un listado de los grupos en el fichero
-# listado_grupos.txt 
-#
-#####################################################
 def generaListadoGrupos():
-    
+    """
+    Escribe un listado de los grupos en el fichero
+    listado_grupos.txt 
+    """
     l = sorted(lista_cursos)    
     cont = 1
     for curso in l:
@@ -697,15 +598,11 @@ def generaListadoGrupos():
         f.write(curso+"\n")
         f.close()
 
-#####################################################
-#              cargaFicheroGestib
-#____________________________________________________
-#
-# Carga el fichero cvs que contiene los datos del  
-# Gestib a la lista_alumnos_gestib 
-# 
-#####################################################
 def cargaFicheroGestib( dades_gestib):
+    """
+    Carga el fichero cvs que contiene los datos del  
+    Gestib a la lista_alumnos_gestib 
+    """
     cont = 0
     error = 0
     
@@ -722,12 +619,12 @@ def cargaFicheroGestib( dades_gestib):
             
             # Se deben leer 7 campos por línea
             if len(aux_user) != 7:
-               print("Error de formato. Línea: {:15} NO SE PROCESA".format(cont))
+               log.imprimir("Error de formato. Línea: {:15} NO SE PROCESA".format(cont))
                error += 1
                continue #no se procesa la línea
             # El primer y último campo deben ser dígitos 
             elif not(aux_user[0].isdigit()) or not(aux_user[6].isdigit()):
-               print ("Error de formato. Línea: {:15} NO SE PROCESA (Dígitos)".format(cont))
+               log.imprimir("Error de formato. Línea: {:15} NO SE PROCESA (Dígitos)".format(cont))
                error += 1
                continue  #no se procesa la línea
     
@@ -737,7 +634,7 @@ def cargaFicheroGestib( dades_gestib):
 
             # Controlar expedientes repetidos 
             if lista_alumnos_gestib.esExpedienteRepetido(alumno.expediente) > 0:
-                print("Error expediente {} repetido. Línea: {:15} NO SE PROCESA".format(alumno.expediente, cont))
+                log.imprimir("Error expediente {} repetido. Línea: {:15} NO SE PROCESA".format(alumno.expediente, cont))
                 error += 1
                 continue
                 
@@ -745,17 +642,14 @@ def cargaFicheroGestib( dades_gestib):
             lista_alumnos_gestib.insertar(alumno)
             
     if error > 0:
-        print ("ALERTA! Se han descartado {} líneas erroneas del fichero {}".format(error,dades_gestib))
+        log.imprimir("\nALERTA! Se han descartado {} líneas erroneas del fichero {}".format(error,dades_gestib))
         #exit()                
 
-#####################################################
-#   muestrasGeneracionEmail([tipo lista de alumnos])
-#____________________________________________________
-#   Muestra las tres combinaciones de email que
-#    se pueden generar
-#####################################################
 def muestrasGeneracionEmail():
-
+    """
+    Muestra las tres combinaciones de email que
+    se pueden generar
+    """
     for alumno in lista_alumnos_gestib.lista:
 
         # No tratar datos de alumnos que no se encuentren en la lista de estudios
@@ -763,33 +657,27 @@ def muestrasGeneracionEmail():
             continue
 
         encontrado = 0
-        print("-------------")
-        print( alumno.nombre, alumno.apellidos)
-        print("{:4} Versión 1\t\t{:30}".format(len(alumno.email)-21,alumno.email))
+        log.imprimir("\n")
+        log.imprimir(alumno.nombre + " " + alumno.apellidos)
+        log.imprimir("{:4} Versión 1\t\t{:30}".format(len(alumno.email)-21,alumno.email))
         
-        email = generaEmail2(alumno.nombre,alumno.apellidos)
-        print("{:4} Versión 2\t\t{:30}".format(len(email)-21, email))
+        email = generaEmail2(alumno.nombre, alumno.apellidos)
+        log.imprimir("{:4} Versión 2\t\t{:30}".format(len(email)-21, email))
         
-        email = generaEmail3(alumno.nombre,alumno.apellidos)
-        print("{:4} Versión 3\t\t{:30}".format(len(email)-21, email))
+        email = generaEmail3(alumno.nombre, alumno.apellidos)
+        log.imprimir("{:4} Versión 3\t\t{:30}".format(len(email)-21, email))
         
         indice_encontrado = usuarios_google.buscarExpediente(alumno.expediente)
         if  indice_encontrado != -1:
-            print("Actual Workspace\t{:30}".format(usuarios_google.obtenerIndice(indice_encontrado).email))        
+            log.imprimir("Actual Workspace\t{:30}".format(usuarios_google.obtenerIndice(indice_encontrado).email))        
 
-
-#####################################################
-#              generarDatosFalsos(fichero)
-#____________________________________________________
-#
-#  Para pruebas y demos públicas
-#  Genera un ficheo de gestib ficticio combinando
-#  aleatoriamente nombres, apellidos, y demás informació
-#  del fichero de gestib.
-#
-#####################################################
 def generarDatosFalsos():
-
+    """
+    Para pruebas y demos públicas
+    Genera un ficheo de gestib ficticio combinando
+    aleatoriamente nombres, apellidos, y demás informació
+    del fichero de gestib.
+    """
     cont = 0
     for alumno in lista_alumnos_gestib.lista:
 
@@ -860,18 +748,12 @@ def generarDatosFalsos():
         f.close()
         cont += 1
             
-
-#####################################################
-#              actualizarExpedientes(fichero)
-#____________________________________________________
-#
-#  Lee el fichero dadesGestib.cvs, busca por nombre
-#  y actualiza los numeros de expediente en el fichero
-#  de salida usuarios_bloque.csv
-#
-#####################################################
 def actualizarExpedientes():
-
+    """
+    Lee el fichero dadesGestib.cvs, busca por nombre
+    y actualiza los numeros de expediente en el fichero
+    de salida usuarios_bloque.csv
+    """
     generaCabeceraUsuarios("usuarios_bloque.csv")
     
     actualizados = 0
@@ -897,20 +779,15 @@ def actualizarExpedientes():
                 escribeUsuarioFichero(alumno,"usuarios_bloque.csv")
        
         elif indice_encontrado == -2:
-            print("Nombre repetido {} {} {} - NO SE PROCESA".format(
+            log.imprimir("Nombre repetido {} {} {} - NO SE PROCESA".format(
                    alumno.nombre, alumno.apellidos, alumno.email))
        
-    print ("Se han actualizado {} expedientes".format(actualizados))
+    log.imprimir("Se han actualizado {} expedientes".format(actualizados))
     
-#####################################################
-#              generaGrupos()
-#____________________________________________________
-#
-#   Genera todos los grupos y contactos
-#
-#####################################################
 def generaGrupos():
-
+    """
+    Genera todos los grupos y contactos
+    """
     generaCabeceraGrupos()
     
     if not path.exists(DIRECTORIO_CONTACTOS):
@@ -942,19 +819,14 @@ def generaGrupos():
             # Escribir el fichero de contactos
             escribeContacto(alumno)
         
-#####################################################
-#              actualizarUsuarios()
-#____________________________________________________
-#
-#  Lee el fichero dadesGestib.cvs y procesa la información.
-#  Si encuentra usuarios nuevos se añaden.
-#  Se actualiza la unidad organizativa, por ejemplo cambio de curso.
-#  NO SE REGENERAN TODOS LOS GRUPOS, pero sí se escriben las entradas
-#  __sólo__ de los nuevos usuarios en el fichero de grupos_bloque.csv
-#
-#####################################################
 def actualizarUsuarios():
-
+    """
+    Lee el fichero dadesGestib.cvs y procesa la información.
+    Si encuentra usuarios nuevos se añaden.
+    Se actualiza la unidad organizativa, por ejemplo cambio de curso.
+    NO SE REGENERAN TODOS LOS GRUPOS, pero sí se escriben las entradas
+    sólo!! de los nuevos usuarios en el fichero de grupos_bloque.csv
+    """
     global cont_validados
     global cont_nuevos
     global cont_actualizados
@@ -1013,7 +885,7 @@ def actualizarUsuarios():
                 escribeInformacionNuevos(n_archivo,alumno)
                 
             else:
-                print("Error, email repetido: {} {} {} {} NO SE PROCESA".format( alumno.nombre,alumno.apellidos,
+                log.imprimir("Error, email repetido: {} {} {} {} NO SE PROCESA".format( alumno.nombre,alumno.apellidos,
                       alumno.curso, alumno.expediente))
                                       
                 #Se escribe en el fichero de repetidos para su revisión
@@ -1044,14 +916,12 @@ def actualizarUsuarios():
                 #escribimos la actualización en el fichero
                 escribeUsuarioFichero(alumno, "usuarios_bloque.csv")
 
-#####################################################
-#                   noValidados()
-# Escribe un fichero de usuarios(usuarios_baja.txt) que
-# ya no figuran en el gestib. Sólo se escriben usuarios
-# que pertenecen a unidades organizativas procesadas
-#
-#####################################################
 def noValidados():
+    """
+    Escribe un fichero de usuarios(usuarios_baja.txt) que
+    ya no figuran en el gestib. Sólo se escriben usuarios
+    que pertenecen a unidades organizativas procesadas
+    """
     n = 0
     for usuario in usuarios_google._lista:
         if usuario.uorg in lista_uorg:
@@ -1091,9 +961,13 @@ lista_cursos = set()
 # Se crea en la lectura del fichero de datos del getib
 lista_uorg = set()
 
+# log para guardar los mensajes de salida en fichero
+log = Log()
+
+# Comprobar que existe el fichero config.ini
 if not path.exists("config.ini"):
-    print("No exixte el fichero config.ini")
-    print("\n")
+    log.imprimir("No exixte el fichero config.ini")
+    log.imprimir("\n")
     exit()
 
 # Cargar las configuraciones del fichero config.ini
@@ -1114,18 +988,29 @@ print("\n")
 # Borrar los archivos de ejecuciones anteriores
 borrarArchivos()
 
-if sys.argv[1] == "-b":
+# Opción borrar archivos
+if len(sys.argv) > 1:
+   if sys.argv[1] == "-b":
     exit()
 
+# Imprimir opciones línea de comandos
 if len(sys.argv) != 3:
-    print("Uso: \n -a actualizar usuarios \n -g regenerar grupos \n -e regenera expedientes\n")
+    log.imprimir("Parámetros incorrectos\n")
+    log.imprimir("\t Uso: \n\t     $python genera.py [opcion] <fichero_gestib.csv>")
+    log.imprimir("\n\t Opciones: \n\t     -a actualizar usuarios \n\t     -g generar grupos \n")
     exit()
 
 # Comprobar que existe el fichero de datos del gestib
 dades_gestib = sys.argv[2]
 if not path.exists(dades_gestib):
-    print("No exixte el fichero: ",dades_gestib)
-    print("\n")
+    linea = "No exixte el fichero " + dades_gestib
+    log.imprimir(linea)
+    log.imprimir("\n")
+    exit()
+
+# Comprobar que existe el fichero users.csv
+if not path.exists("users.csv"):
+    log.imprimir("No exixte el fichero users.csv\n")
     exit()
 
 # Opción actualizar usuarios
@@ -1136,9 +1021,9 @@ if sys.argv[1] == "-a":
     generaListadoUorg()
     generaListadoGrupos()
     noValidados()
-    print("\n\nResumen:")
-    print("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
-    print("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
+    log.imprimir("\nResumen:")
+    log.imprimir("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
+    log.imprimir("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
 # Opción generar grupos
 elif sys.argv[1] == "-g":
     cargarUsuariosGoogle()

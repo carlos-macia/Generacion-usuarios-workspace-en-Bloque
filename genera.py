@@ -514,6 +514,30 @@ def escribeContacto( alumno):
     f.write(linea+"\n")
     f.close()
 
+def existeArchivosEntrada(dades_gestib):
+    existe = 1
+    # Comprobar que existe el fichero de datos del gestib
+    dades_gestib = sys.argv[2]
+    if not path.exists(dades_gestib):
+        linea = "No exixte el fichero " + dades_gestib
+        log.imprimir(linea)
+        log.imprimir("\n")
+        existe = 0
+
+    # Comprobar que tiene extensión csv
+    elif dades_gestib[-3:] != "csv":
+        linea = "El archivo {} debe conversitrse a formato csv, ".format(dades_gestib)
+        log.imprimir(linea)
+        log.imprimir("\n")
+        existe = 0
+
+    # Comprobar que existe el fichero users.csv
+    if not path.exists("users.csv"):
+        log.imprimir("No exixte el fichero users.csv\n")
+        existe = 0
+    
+    return existe
+
 def borrarArchivos():
     """
     Borrar archivos de de salida de ejecuciones anteriores
@@ -554,13 +578,6 @@ def generaCabeceraGrupos():
     f.write(linea+"\n")
     f.close()
 
-#####################################################
-#              generaCabeceraContactos()
-#____________________________________________________
-#
-#  
-#
-#####################################################
 def generaCabeceraContactos():
     """
     Escribe la cabecera del archivo de contactos
@@ -985,80 +1002,81 @@ UNIDAD_ORGANIZATIVA_PADRE = config['MAIN']['UNIDAD_ORGANIZATIVA_PADRE']
 
 print("\n")
 
-# Borrar los archivos de ejecuciones anteriores
-borrarArchivos()
-
-# Opción borrar archivos
+ok = 0
 if len(sys.argv) > 1:
-   if sys.argv[1] == "-b":
-    exit()
+    # Opción borrar archivos
+    if sys.argv[1] == "-b":
+        print ("Borrar archivos")
+        borrarArchivos()
+        ok = 1
+    # Opción borrar archivar
+    elif sys.argv[1] == "-arch":
+        print ("Archivar")
+        ok = 1
+        #archivar   
+    elif len(sys.argv) > 2:
+        dades_gestib = sys.argv[2]
+            
+        # Opción actualizar usuarios
+        if sys.argv[1] == "-a":
+            
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:
+                print ("opcion actualizar")
+                borrarArchivos()
+                cargarUsuariosGoogle()
+                cargaFicheroGestib(dades_gestib)    
+                actualizarUsuarios()
+                generaListadoUorg()
+                generaListadoGrupos()
+                noValidados()
+                log.imprimir("\nResumen:")
+                log.imprimir("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
+                log.imprimir("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
+        # Opción generar grupos
+        elif sys.argv[1] == "-g":
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:    
+                borrarArchivos()
+                cargarUsuariosGoogle()
+                cargaFicheroGestib(dades_gestib)
+                generaGrupos()
+        # Opcion regenerar expedientes
+        elif sys.argv[1] == "-e":
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:
+                borrarArchivos()
+                cargarUsuariosGoogle()
+                cargaFicheroGestib(dades_gestib)
+                actualizarExpedientes()
+        # Opcion regenerar informacion
+        elif sys.argv[1] == "-i":
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:
+                borrarArchivos()
+                cargarUsuariosGoogle()
+                cargaFicheroGestib(dades_gestib)
+                actualizarInformacionEmail()
 
-# Imprimir opciones línea de comandos
-if len(sys.argv) != 3:
+        elif sys.argv[1] == "-p":
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:
+                borrarArchivos()
+                cargarUsuariosGoogle()
+                cargaFicheroGestib(dades_gestib)
+                muestrasGeneracionEmail()
+                
+        elif sys.argv[1] == "-d":
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:
+                borrarArchivos()
+                cargarUsuariosGoogle()
+                cargaFicheroGestib(dades_gestib)
+                generarDatosFalsos()
+
+if ok == 0:
+    # Imprimir opciones línea de comandos
     log.imprimir("Parámetros incorrectos\n")
     log.imprimir("\t Uso: \n\t     $python genera.py [opcion] <fichero_gestib.csv>")
     log.imprimir("\n\t Opciones: \n\t     -a actualizar usuarios \n\t     -g generar grupos \n")
-    exit()
-
-# Comprobar que existe el fichero de datos del gestib
-dades_gestib = sys.argv[2]
-if not path.exists(dades_gestib):
-    linea = "No exixte el fichero " + dades_gestib
-    log.imprimir(linea)
-    log.imprimir("\n")
-    exit()
-
-# Comprobar que tiene extensión csv
-elif dades_gestib[-3:] != "csv":
-    linea = "El archivo {} debe conversitrse a formato csv, ".format(dades_gestib)
-    log.imprimir(linea)
-    log.imprimir("\n")
-    exit()
-
-# Comprobar que existe el fichero users.csv
-if not path.exists("users.csv"):
-    log.imprimir("No exixte el fichero users.csv\n")
-    exit()
-
-# Opción actualizar usuarios
-if sys.argv[1] == "-a":
-    cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)    
-    actualizarUsuarios()
-    generaListadoUorg()
-    generaListadoGrupos()
-    noValidados()
-    log.imprimir("\nResumen:")
-    log.imprimir("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
-    log.imprimir("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
-# Opción generar grupos
-elif sys.argv[1] == "-g":
-    cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)
-    generaGrupos()
-# Opcion regenerar expedientes
-elif sys.argv[1] == "-e":
-    cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)
-    actualizarExpedientes()
-# Opcion regenerar informacion
-elif sys.argv[1] == "-i":
-    cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)
-    actualizarInformacionEmail()
-
-elif sys.argv[1] == "-p":
-    cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)
-    muestrasGeneracionEmail()
-
-elif sys.argv[1] == "-d":
-    cargarUsuariosGoogle()
-    cargaFicheroGestib(dades_gestib)
-    generarDatosFalsos()
-
-#Opcion incorrecta
-else:
-    print("Parámetros incorrectos")
-    print("Uso: \n -a actualizar usuarios \n -g regenerar grupos \n -e regenera expedientes\n")
-    exit()
+    

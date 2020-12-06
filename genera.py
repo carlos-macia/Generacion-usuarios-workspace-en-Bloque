@@ -28,6 +28,7 @@ class User:
         self.apellidos = apellidos
         self.email = email
         self.uorg = uorg
+        self.password = "****"
         self.validado = validado
         self.expediente = expediente
 
@@ -523,7 +524,6 @@ def existeArchivosEntrada(dades_gestib):
         log.imprimir(linea)
         log.imprimir("\n")
         existe = 0
-
     # Comprobar que tiene extensión csv
     elif dades_gestib[-3:] != "csv":
         linea = "El archivo {} debe conversitrse a formato csv, ".format(dades_gestib)
@@ -547,6 +547,7 @@ def borrarArchivos():
                  'usuarios_repetidos.csv','listado_uorg.txt', 'listado_grupos.txt',
                  'usuarios_baja.txt', 'genera.log']
 
+    # Borrar archivos
     for file in archivos:
         if path.exists(file):
             remove(file)
@@ -688,7 +689,7 @@ def muestrasGeneracionEmail():
         if  indice_encontrado != -1:
             log.imprimir("Actual Workspace\t{:30}".format(usuarios_google.obtenerIndice(indice_encontrado).email))        
 
-def generarDatosFalsos():
+def generarDatosAleatorios():
     """
     Para pruebas y demos públicas
     Genera un ficheo de gestib ficticio combinando
@@ -935,25 +936,20 @@ def actualizarUsuarios():
 
 def noValidados():
     """
-    Escribe un fichero de usuarios(usuarios_baja.txt) que
-    ya no figuran en el gestib. Sólo se escriben usuarios
-    que pertenecen a unidades organizativas procesadas
+    Mueve los usuarios que no figuran en el fichero del gestiv
+    a la unidad organizativa exalumnes. Sólo se mueven usuarios
+    que pertenecen a las unidades organizativas procesadas
     """
-    n = 0
+    global cont_exalumnes
+    cont_exalumnes = 0
     for usuario in usuarios_google._lista:
         if usuario.uorg in lista_uorg:
             if usuario.validado == 0:
-                n += 1
-                #if usuario.expediente != "":
-                #formatear informacion
-                nombre = usuario.nombre+" "+ usuario.apellidos
-                linea = "{0:30}{1:35}{2:15}"
-                linea = linea.format(nombre,usuario.email,usuario.uorg)
-                f= open("usuarios_baja.txt","a")
-                f.write(linea+"\n")
-                f.close()
-
-                #print(linea)
+                cont_exalumnes += 1
+                usuario.uorg = UNIDAD_ORGANIZATIVA_PADRE + "/exalumnes"
+                # Escribimos la actualización en el fichero
+                # Polimorfismo Alumno, Usuario
+                escribeUsuarioFichero(usuario, "usuarios_bloque.csv")
 
 #####################################################
 #                         
@@ -965,7 +961,7 @@ def noValidados():
 cont_nuevos = 0
 cont_actualizados = 0
 cont_validados = 0
-
+cont_exalumnes = 0
 #lista de usuarios consola
 usuarios_google = ListaUsers()
 #lista de alumnos getib
@@ -1006,20 +1002,16 @@ ok = 0
 if len(sys.argv) > 1:
     # Opción borrar archivos
     if sys.argv[1] == "-b":
-        print ("Borrar archivos")
         borrarArchivos()
         ok = 1
     # Opción borrar archivar
     elif sys.argv[1] == "-arch":
-        print ("Archivar")
         ok = 1
         #archivar   
     elif len(sys.argv) > 2:
         dades_gestib = sys.argv[2]
-            
         # Opción actualizar usuarios
         if sys.argv[1] == "-a":
-            
             ok = 1
             if existeArchivosEntrada(dades_gestib) == 1:
                 print ("opcion actualizar")
@@ -1033,6 +1025,7 @@ if len(sys.argv) > 1:
                 log.imprimir("\nResumen:")
                 log.imprimir("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
                 log.imprimir("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
+                log.imprimir("{} usuarios pasaron a la unidad exalumnes".format(cont_exalumnes))
         # Opción generar grupos
         elif sys.argv[1] == "-g":
             ok = 1
@@ -1049,15 +1042,7 @@ if len(sys.argv) > 1:
                 cargarUsuariosGoogle()
                 cargaFicheroGestib(dades_gestib)
                 actualizarExpedientes()
-        # Opcion regenerar informacion
-        elif sys.argv[1] == "-i":
-            ok = 1
-            if existeArchivosEntrada(dades_gestib) == 1:
-                borrarArchivos()
-                cargarUsuariosGoogle()
-                cargaFicheroGestib(dades_gestib)
-                actualizarInformacionEmail()
-
+        # Opción muestras email
         elif sys.argv[1] == "-p":
             ok = 1
             if existeArchivosEntrada(dades_gestib) == 1:
@@ -1065,14 +1050,14 @@ if len(sys.argv) > 1:
                 cargarUsuariosGoogle()
                 cargaFicheroGestib(dades_gestib)
                 muestrasGeneracionEmail()
-                
+        # Opcion Generar datos aleatorios        
         elif sys.argv[1] == "-d":
             ok = 1
             if existeArchivosEntrada(dades_gestib) == 1:
                 borrarArchivos()
                 cargarUsuariosGoogle()
                 cargaFicheroGestib(dades_gestib)
-                generarDatosFalsos()
+                generarDatosAleatorios()
 
 if ok == 0:
     # Imprimir opciones línea de comandos

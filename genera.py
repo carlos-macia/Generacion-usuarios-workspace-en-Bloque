@@ -13,9 +13,13 @@ import configparser
 from os import remove
 from os import path
 from os import mkdir
+from os import listdir
+from shutil import copy
 from shutil import rmtree
 from random import randint
-
+from datetime import datetime
+from datetime import timedelta
+from time import ctime
 class User:
     """
     Clase para guardar los datos de usuario que se 
@@ -526,16 +530,30 @@ def existeArchivosEntrada(dades_gestib):
         existe = 0
     # Comprobar que tiene extensión csv
     elif dades_gestib[-3:] != "csv":
-        linea = "El archivo {} debe conversitrse a formato csv, ".format(dades_gestib)
+        linea = "\nEl archivo {} debe conversitrse a formato csv, ".format(dades_gestib)
         log.imprimir(linea)
         log.imprimir("\n")
         existe = 0
+    else:
+        fecha_archivo = datetime.strptime(ctime(path.getctime(dades_gestib)),"%a %b %d %H:%M:%S %Y")
+        limite_anterior = datetime.now()-timedelta(hours=1)
+        if fecha_archivo < limite_anterior:
+            log.imprimir("ALERTA! El archivo {} está caducado".format(dades_gestib))
+            log.imprimir("Debe bajar el archivo de nuevo desde Gestib\n")
+            #existe = 0
 
     # Comprobar que existe el fichero users.csv
     if not path.exists("users.csv"):
         log.imprimir("No exixte el fichero users.csv\n")
         existe = 0
-    
+    else:
+        fecha_archivo = datetime.strptime(ctime(path.getctime("users.csv")),"%a %b %d %H:%M:%S %Y")
+        limite_anterior = datetime.now()-timedelta(hours=1)
+        if fecha_archivo < limite_anterior:
+            log.imprimir("ALERTA! El archivo users.csv está caducado")
+            log.imprimir("Debe bajar el archivo de nuevo desde Workspace\n")
+            #existe = 0        
+                
     return existe
 
 def borrarArchivos():
@@ -560,6 +578,50 @@ def borrarArchivos():
     if path.exists(DIRECTORIO_INFORMACION):
         rmtree(DIRECTORIO_INFORMACION)
 
+def archivar():
+    
+    ruta = "Archivo/Ficheros_"
+    
+    fecha = datetime.now()
+    ruta += fecha.strftime('%d-%m-%Y_%H-%M')
+    
+    print(ruta)
+    
+    if not path.exists("Archivo"):
+        mkdir("Archivo")
+    
+    if not path.exists(ruta):
+        mkdir(ruta)
+    
+    if path.exists(DIRECTORIO_CONTACTOS):
+        dir_destino = ruta+"/"+DIRECTORIO_CONTACTOS
+        if not path.exists(dir_destino):
+            mkdir(dir_destino)
+        lista_ficheros = listdir(DIRECTORIO_CONTACTOS)
+        for fichero in lista_ficheros:
+            full_file_name = path.join(DIRECTORIO_CONTACTOS, fichero)
+            copy(full_file_name , dir_destino)
+    
+    if path.exists(DIRECTORIO_INFORMACION):
+        dir_destino = ruta+"/"+DIRECTORIO_INFORMACION
+        if not path.exists(dir_destino):
+            mkdir(dir_destino)
+        lista_ficheros = listdir(DIRECTORIO_INFORMACION)
+        for fichero in lista_ficheros:
+            full_file_name = path.join(DIRECTORIO_INFORMACION, fichero)
+            copy(full_file_name , dir_destino)
+    """
+    archivos = [ 'usuarios_bloque.csv', 'grupos_bloque.csv', 'nuevos_contactos.csv',
+                 'usuarios_repetidos.csv','listado_uorg.txt', 'listado_grupos.txt',
+                 'usuarios_baja.txt', 'genera.log']
+    """
+    archivos = listdir(".")
+
+    for fichero in archivos:
+        if path.isfile(fichero):
+            #print(fichero)
+            copy(fichero , ruta)
+    
 def generaCabeceraUsuarios(fichero):
     """
     Escribe la cabecera del archivo usuarios_bloque.csv
@@ -995,6 +1057,7 @@ FORZAR_CAMBIAR_PASSWORD = config['MAIN']['CAMBIAR_PASSWD']
 DIRECTORIO_CONTACTOS = config['MAIN']['DIRECTORIO_CONTACTOS']
 DIRECTORIO_INFORMACION = config['MAIN']['DIRECTORIO_INFORMACION']
 UNIDAD_ORGANIZATIVA_PADRE = config['MAIN']['UNIDAD_ORGANIZATIVA_PADRE']
+AUTOARCHIVAR = config['MAIN']['AUTOARCHIVAR']
 
 print("\n")
 
@@ -1007,14 +1070,13 @@ if len(sys.argv) > 1:
     # Opción borrar archivar
     elif sys.argv[1] == "-arch":
         ok = 1
-        #archivar   
+        archivar()   
     elif len(sys.argv) > 2:
         dades_gestib = sys.argv[2]
         # Opción actualizar usuarios
         if sys.argv[1] == "-a":
             ok = 1
             if existeArchivosEntrada(dades_gestib) == 1:
-                print ("opcion actualizar")
                 borrarArchivos()
                 cargarUsuariosGoogle()
                 cargaFicheroGestib(dades_gestib)    
@@ -1022,10 +1084,12 @@ if len(sys.argv) > 1:
                 generaListadoUorg()
                 generaListadoGrupos()
                 noValidados()
+                if AUTOARCHIVAR == "True":
+                    archivar()
                 log.imprimir("\nResumen:")
                 log.imprimir("Se han añadido {} usuarios nuevos al fichero usuarios_bloque.csv".format( cont_nuevos ))
                 log.imprimir("Se han añadido {} actualizaciones al fichero usuarios_bloque.csv".format(cont_actualizados))
-                log.imprimir("{} usuarios pasaron a la unidad exalumnes".format(cont_exalumnes))
+                log.imprimir("{} usuarios pasaron a la unidad organizativa exalumnes".format(cont_exalumnes))
         # Opción generar grupos
         elif sys.argv[1] == "-g":
             ok = 1

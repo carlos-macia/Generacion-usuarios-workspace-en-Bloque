@@ -585,8 +585,6 @@ def archivar():
     fecha = datetime.now()
     ruta += fecha.strftime('%d-%m-%Y_%H-%M')
     
-    print(ruta)
-    
     if not path.exists("Archivo"):
         mkdir("Archivo")
     
@@ -615,12 +613,16 @@ def archivar():
                  'usuarios_repetidos.csv','listado_uorg.txt', 'listado_grupos.txt',
                  'usuarios_baja.txt', 'genera.log']
     """
+    excluir = ['genera.py','README.txt','LICENSE']
+    
     archivos = listdir(".")
 
     for fichero in archivos:
+        if fichero in excluir:
+            continue
         if path.isfile(fichero):
-            #print(fichero)
             copy(fichero , ruta)
+
     
 def generaCabeceraUsuarios(fichero):
     """

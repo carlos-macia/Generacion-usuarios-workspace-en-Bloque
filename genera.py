@@ -820,7 +820,7 @@ def generarDatosAleatorios():
         alumno.curso = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).curso
         alumno.grupo = lista_alumnos_gestib.obtenerIndice(indice_aleatorio).grupo
            
-        alumno.expediente = "099" + alumno.expediente
+        alumno.expediente = "3" + alumno.expediente + str(randint(0,9))
         linea = "{0},{1},{2},{3},{4},{5},{6}"
         linea = linea.format( cont, alumno.apellidos, alumno.nombre,
                              alumno.estudios,alumno.curso, alumno.grupo, alumno.expediente)

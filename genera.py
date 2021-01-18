@@ -760,6 +760,10 @@ def generarDatosAleatorios():
     aleatoriamente nombres, apellidos, y demás informació
     del fichero de gestib.
     """
+    if path.exists("datos_aleatorios.csv"):
+            remove("datos_aleatorios.csv")
+
+    
     cont = 0
     for alumno in lista_alumnos_gestib.lista:
 
@@ -825,7 +829,7 @@ def generarDatosAleatorios():
         linea = linea.format( cont, alumno.apellidos, alumno.nombre,
                              alumno.estudios,alumno.curso, alumno.grupo, alumno.expediente)
 
-        f= open("gestib.csv","a")
+        f= open("datos_aleatorios.csv","a")
         f.write(linea+"\n")
         f.close()
         cont += 1

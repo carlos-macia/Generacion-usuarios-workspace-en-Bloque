@@ -422,7 +422,7 @@ def cargarUsuariosGoogle():
    consola de Google que se encuentran en el 
    fichero users.cvs en la lista usuarios_google
     """
-    with open('users.csv') as f:
+    with open('users.csv', encoding="utf8") as f:
         for linea in f:
             aux_user=linea.split(',');
             if aux_user[0] == "First Name [Required]":

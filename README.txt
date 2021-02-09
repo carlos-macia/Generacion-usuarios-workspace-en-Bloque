@@ -3,6 +3,13 @@ Email: cmacia@iesisidormacabich.es
 Página del proyecto en hithub
 https://github.com/carlos-macia/Generacion-usuarios-workspace-en-Bloque
 
+Parte 1: https://youtu.be/nqX2AFXemEY
+Parte 2: https://youtu.be/lc36BMvwxxg
+Parte 3: https://youtu.be/71mh8NUC01c
+Parte 4: https://youtu.be/ds1Yfh29lhQ
+Parte 5: https://youtu.be/b66BfKD_Ras
+Parte 6:: https://youtu.be/hA0kT1XnayY
+
 1. Introducción.
 
 Este script genera, a partir de un fichero de alumnos del gestib, usuarios en 

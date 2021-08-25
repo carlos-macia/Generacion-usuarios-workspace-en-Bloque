@@ -416,6 +416,7 @@ def generaUnidadOrganizativa(estudios,curso,grupo):
     #uorg = uorg.replace(".","") # quita el punto de batx.
     return uorg
 
+
 def cargarUsuariosGoogle():
     """
     Carga la información de los usuarios de la 

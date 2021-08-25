@@ -1020,6 +1020,7 @@ def noValidados():
                 # Polimorfismo Alumno, Usuario
                 escribeUsuarioFichero(usuario, "usuarios_bloque.csv")
 
+
 #####################################################
 #                         
 #

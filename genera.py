@@ -1021,6 +1021,7 @@ def noValidados():
                 escribeUsuarioFichero(usuario, "usuarios_bloque.csv")
 
 
+
 #####################################################
 #                         
 #

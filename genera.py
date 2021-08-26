@@ -1015,7 +1015,11 @@ def noValidados():
         if usuario.uorg in lista_uorg:
             if usuario.validado == 0:
                 cont_exalumnes += 1
-                usuario.uorg = UNIDAD_ORGANIZATIVA_PADRE + "/exalumnes"
+                #usuario.uorg = UNIDAD_ORGANIZATIVA_PADRE + "/exalumnes"
+                
+                partes = usuario.uorg.split("/")
+                usuario.uorg = partes[1] + "/" + partes[2] + "/" + "exalumnes"
+
                 # Escribimos la actualización en el fichero
                 # Polimorfismo Alumno, Usuario
                 escribeUsuarioFichero(usuario, "usuarios_bloque.csv")

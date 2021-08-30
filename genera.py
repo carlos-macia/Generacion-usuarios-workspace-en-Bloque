@@ -988,7 +988,7 @@ def actualizarUsuarios():
             cont_validados += 1
 
             # Actualizar la información
-            if(alumno.uorg != usuario.uorg or  #Si ha cambiado de curso hay que cambiar la unidad organizativa
+            if(alumno.uorg.lower() != usuario.uorg.lower() or  #Si ha cambiado de curso hay que cambiar la unidad organizativa
                alumno.nombre != usuario.nombre or   #Corrige nombre y apellidos
                alumno.apellidos != usuario.apellidos):  
                                                                
@@ -1012,18 +1012,29 @@ def noValidados():
     global cont_exalumnes
     cont_exalumnes = 0
     for usuario in usuarios_google._lista:
-        if usuario.uorg in lista_uorg:
+        partes = usuario.uorg.split("/")
+        if len(partes)>3:
+            if partes[3] == "Exalumnes":
+                estudios = "NoCambiar"
+            else:
+                estudios = partes[2]
+        else:
+            estudios = "NoTratar" 
+        #if usuario.uorg in lista_uorg: #(ojo los grupos que no tienen alumnos nuevos)
+                                       # CAMBIAR POR LISTA ESTUDIOS ACOTADOS
+        if estudios in LISTA_DE_ESTUDIOS_ACOTADOS: 
             if usuario.validado == 0:
                 cont_exalumnes += 1
                 #usuario.uorg = UNIDAD_ORGANIZATIVA_PADRE + "/exalumnes"
                 
                 partes = usuario.uorg.split("/")
-                usuario.uorg = partes[1] + "/" + partes[2] + "/" + "exalumnes"
+                usuario.uorg = "/" + partes[1] + "/" + partes[2] + "/" + "exalumnes"
 
                 # Escribimos la actualización en el fichero
                 # Polimorfismo Alumno, Usuario
                 escribeUsuarioFichero(usuario, "usuarios_bloque.csv")
-
+    if cont_exalumnes > 1:
+        log.imprimir("ALERTA: Asegurate de tener las SUB-Unidades Organizativas de EXALUMNOS")
 
 
 #####################################################

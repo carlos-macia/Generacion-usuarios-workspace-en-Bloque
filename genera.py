@@ -172,6 +172,17 @@ class Log:
 
 def generaEmail(nombre, apellidos):
     """
+    Seleciona la función generadora de email según el método
+    """
+    if METODO_GENERA_EMAIL == "1":
+        return generaEmail1(nombre,apellidos)
+        print (METODO_GENERA_EMAIL)
+    else:
+        return generaEmail3(nombre, apellidos)
+
+
+def generaEmail1(nombre, apellidos):
+    """
     Genera el email a partir del nombre y los apellidos
     Método principal
     """
@@ -238,7 +249,7 @@ def resumeApellidos(apellidos):
 def generaEmail2(nombre,apellidos):
     """
     Genera el email a partir del nombre y los apellidos
-    Método secundário
+    Método secundário del método 1
     """
     
     # Pasar a miúsculas y quitar acentos
@@ -298,7 +309,7 @@ def extraerPrimeraSilaba(cadena):
 def generaEmail3(nombre,apellidos):
     """
     Genera el email a partir del nombre y los apellidos
-    Tercer método
+    método 2 de config
     """
     # Pasar a miúsculas y quitar acentos
     apellidos = eliminaAcentos(apellidos.lower())
@@ -315,7 +326,7 @@ def generaEmail3(nombre,apellidos):
     apellidos = partes[0]
     
     # Formamos el email con las iniciales del nombre y el primer apellido    
-    email =  nombre + apellidos
+    email =  "a" + nombre + apellidos
 
     #Sustituir ñ y Ç
     email = email.replace("ñ","n")
@@ -331,6 +342,48 @@ def generaEmail3(nombre,apellidos):
     email +=  "@" + DOMINIO
 
     return (email)
+
+def generaEmail4(nombre,apellidos):
+    """
+    Genera el email a partir del nombre y los apellidos
+    Cuarto  método. Complementa al 3 cuando hay repetidos 
+    """
+    # Pasar a miúsculas y quitar acentos
+    apellidos = eliminaAcentos(apellidos.lower())
+    nombre = eliminaAcentos(nombre.lower())
+    
+    # Nos quedamos con la inicial de cada nombre
+    partes = nombre.split(" ")
+    nombre = partes[0][0]
+    if len(partes) > 1:
+        nombre += partes[1][0]
+        
+    # Nos quedamos con el primer apellido
+    partes = apellidos.split(" ")
+    apellidos = partes[0]
+    
+    # Formamos el email con las iniciales del nombre y el primer apellido
+    if len(partes)>1:    
+        email =  "a" + nombre + apellidos + partes[1][0]
+    else:
+        email =  "a" + nombre + apellidos + "2"
+
+        
+    #Sustituir ñ y Ç
+    email = email.replace("ñ","n")
+    email = email.replace("ç","c")
+
+    #Eliminar simbolos
+    email = eliminaSimbolos(email)
+   
+    # Quitamos espacios, tabuladores y \n
+    email = eliminaEspacios(email)
+    
+    # añadimos la @ más el dominio
+    email +=  "@" + DOMINIO
+
+    return (email)
+
 
 def eliminaEspacios(cadena):
     """
@@ -950,8 +1003,12 @@ def actualizarUsuarios():
 
             # Comprobar que el email no está repetido
             if usuarios_google.buscarEmail(alumno.email) > 0: #el email lo usa otro usuario
-                # se genera un nuevo email con la segunda función
-                alumno.email = generaEmail2(alumno.nombre, alumno.apellidos)
+                # se genera un nuevo email con la segunda función según método
+                if METODO_GENERA_EMAIL == "1":
+                    alumno.email = generaEmail2(alumno.nombre, alumno.apellidos)
+                else:
+                    alumno.email = generaEmail4(alumno.nombre, alumno.apellidos)
+                    
                 #print(alumno.nombre, alumno.apellidos) 
             # Se vuelve a buscar por si el segundo email también está usado
             if usuarios_google.buscarEmail(alumno.email) == -1: # se puede usar este email
@@ -1077,6 +1134,7 @@ DOMINIO = config['MAIN']['DOMINIO']
 est = config['MAIN']['LISTA_ESTUDIOS'] 
 LISTA_DE_ESTUDIOS_ACOTADOS= est.split(",")
 
+METODO_GENERA_EMAIL = config['MAIN']['METODO_GENERA_MAIL']
 FORZAR_CAMBIAR_PASSWORD = config['MAIN']['CAMBIAR_PASSWD']
 DIRECTORIO_CONTACTOS = config['MAIN']['DIRECTORIO_CONTACTOS']
 DIRECTORIO_INFORMACION = config['MAIN']['DIRECTORIO_INFORMACION']
@@ -1091,7 +1149,7 @@ if len(sys.argv) > 1:
     if sys.argv[1] == "-b":
         borrarArchivos()
         ok = 1
-    # Opción borrar archivar
+    # Opción archivar
     elif sys.argv[1] == "-arch":
         ok = 1
         archivar()   

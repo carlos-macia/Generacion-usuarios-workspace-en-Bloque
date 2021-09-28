@@ -547,7 +547,9 @@ def escribeInformacionNuevos(fichero, alumno):
     """
     #formatear informacion
     nombre = alumno.nombre+" "+ alumno.apellidos
-    linea = "{0:40}{1:35}{2:10}{3:8}{4:2}"
+    #linea = "{0:40}{1:35}{2:10}{3:8}{4:2}"
+    linea = "{0},{1},{2},{3},{4}"
+    
     linea = linea.format(nombre,alumno.email, alumno.password,alumno.curso,alumno.grupo)
 
     f= open(DIRECTORIO_INFORMACION+ "/" + fichero,"a")
@@ -572,6 +574,44 @@ def escribeContacto( alumno):
     f= open(DIRECTORIO_CONTACTOS+ "/" + fichero,"a")
     f.write(linea+"\n")
     f.close()
+
+def escribeContactoProfessor( nombre, apellidos, email):
+    """
+    genera una entrada de contacto en el fichero
+    cvs correspondiente
+    """
+    #formatear la etiqueta de contacto
+    etiqueta = "Claustre"
+
+    linea = "{0} {1},{0},,{1},,,,,,,,,,,,,,,,,,,,,,,,,{2} ::: * myContacts,* ,{3}"
+    linea = linea.format(nombre,apellidos,etiqueta,email)
+
+    fichero = "contactos_claustre.csv"
+
+    #f= open(DIRECTORIO_CONTACTOS+ "/" + fichero,"a")
+    
+    f= open( fichero,"a")
+    
+    f.write(linea+"\n")
+    f.close()
+
+def GeneraContactosProfessors():
+    """
+    """
+    with open('users.csv', encoding="utf8") as f:
+        for linea in f:
+            aux_user=linea.split(',')
+            if aux_user[0] == "First Name [Required]":
+                continue
+            
+            uorg= aux_user[5]
+            uorg_split = uorg.split('/')
+            if uorg_split[1] == "claustre":
+                if uorg != "/claustre/antic professorat centre":     
+                    nombre = aux_user[0]
+                    apellidos = aux_user[1]
+                    email = aux_user[2]
+                    escribeContactoProfessor(nombre, apellidos, email)
 
 def existeArchivosEntrada(dades_gestib):
     existe = 1
@@ -984,6 +1024,9 @@ def actualizarUsuarios():
         # No tratar datos de alumnos que no se encuentren en la lista de estudios
         if alumno.estudios not in LISTA_DE_ESTUDIOS_ACOTADOS:
             continue
+        # No tratar grupos sin letra asignada    
+        if alumno.grupo == "-":
+            continue
 
         # Añadir a la lista de cursos(grupos) para luego poder crear las cabeceras        
         lista_cursos.add(alumno.curso+alumno.grupo[0].upper())
@@ -1025,7 +1068,7 @@ def actualizarUsuarios():
                 usuarios_google.insertar(us)   
 
                 # Generar una entrada en el fichero de información para los tutores
-                n_archivo = alumno.curso+alumno.grupo[0].upper()+".txt"
+                n_archivo = alumno.curso+alumno.grupo[0].upper()+".csv"
                 escribeInformacionNuevos(n_archivo,alumno)
                 
             else:
@@ -1204,6 +1247,15 @@ if len(sys.argv) > 1:
                 cargarUsuariosGoogle()
                 cargaFicheroGestib(dades_gestib)
                 generarDatosAleatorios()
+        # Opcion Generar datos aleatorios        
+        elif sys.argv[1] == "-cp":
+            ok = 1
+            if existeArchivosEntrada(dades_gestib) == 1:
+                borrarArchivos()
+                GeneraContactosProfessors()
+                #cargarUsuariosGoogle()
+                #cargaFicheroGestib(dades_gestib)
+                #generarDatosAleatorios()
 
 if ok == 0:
     # Imprimir opciones línea de comandos

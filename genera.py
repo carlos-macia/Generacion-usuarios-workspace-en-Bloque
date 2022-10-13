@@ -489,17 +489,22 @@ def generaPassword():
     """
     Genera un password alfanumerico de 8 caracteres
     """
-    caract=string.ascii_letters
-    password = ("").join(random.choice(caract)for i in range(2))
+    #caract=string.ascii_letters
+    caract="ABCDEFGHJKNMPQRSTUVWXYZabcdefghjknmpqrstuvxyz"
+    digitos = "23456789"
+    
+    password = ("").join(random.choice(caract+digitos)for i in range(2))
 
-    caract= string.ascii_letters + string.digits
-    password += ("").join(random.choice(caract)for i in range(3))
+    #caract= string.ascii_letters + string.digits
+    
+    password += ("").join(random.choice(caract+digitos+digitos+digitos)for i in range(3))
 
-    caract=  string.digits
-    password += ("").join(random.choice(caract)for i in range(1))
+    #caract=  string.digits
+    
+    password += ("").join(random.choice(digitos)for i in range(1))
 
-    caract=string.ascii_letters
-    password += ("").join(random.choice(caract)for i in range(2))
+    #caract=string.ascii_letters
+    password += ("").join(random.choice(caract+digitos+digitos)for i in range(2))
 
     return(password)
 
